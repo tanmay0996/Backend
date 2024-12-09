@@ -8,7 +8,30 @@ dotenv.config({
 })
 
 
-connectDB()
+connectDB()    // ek promise return kar raha
+.then(() => {
+    app.on("error",(error) => {
+        // Set up error handling for the express app
+        console.log("Error in conn ExpressApp",error)
+        throw error
+         
+       })
+       // Start the server on the specified port
+    app.listen(process.env.PORT|| 8000, () => {
+        console.log(`Server is running on port:${process.env.PORT}`);
+        
+      
+    }
+    )
+  
+}
+)
+.catch((error) => {
+     // Handle any errors that occur during the MongoDB connection
+    console.log("MONGODB CONNECTION FAiled!!!",error);
+  
+}
+)
 
 
 

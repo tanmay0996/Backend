@@ -2,6 +2,7 @@
 import dotenv from "dotenv"          // we want env variable load as early as possible so we put them in main file(index.js) and at the top position
 
 import connectDB from "./db/index.js"
+import {app} from "./app.js"
 
 dotenv.config({
     path:'./env'

@@ -1,4 +1,4 @@
-const asyncHandler = (requestHandler) => {
+const asyncHandler = (requestHandler) => {  // asyncHandler higher order fn hai usko retrun toh karwao
     return (req, res, next) => {
         Promise.resolve(requestHandler(req, res, next)).catch((err) => next(err))
     }

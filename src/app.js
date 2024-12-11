@@ -16,4 +16,13 @@ app.use(cookieParser())
 
 
 
+//importing Routes
+import userRouter from "./routes/user.routes.js"
+
+//routes declaration
+app.use("/api/v1/users",userRouter)         // /users pe userRouter(middleware) ko activate karenge
+//http://localhost:8000/api/v1/users/register
+
+
+
 export {app}

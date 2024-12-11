@@ -17,7 +17,7 @@ app.use(cookieParser())
 
 
 //importing Routes
-import userRouter from "./routes/user.routes.js"
+import userRouter from "./routes/user.routes.js"  //coustomize name
 
 //routes declaration
 app.use("/api/v1/users",userRouter)         // /users pe userRouter(middleware) ko activate karenge

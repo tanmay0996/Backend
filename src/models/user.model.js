@@ -56,7 +56,7 @@ const userSchema= new mongoose.Schema(
 userSchema.pre("save",async function(next) {  //save karne se just pehle kya kro?
     if(!this.isModified("password")) return next();
 
-    this.password=bcrypt.hash(this.password,10)  //this may sari fields aa jaegi userSchema ki
+    this.password=await bcrypt.hash(this.password,10)  //this may sari fields aa jaegi userSchema ki
     next()
 
 })

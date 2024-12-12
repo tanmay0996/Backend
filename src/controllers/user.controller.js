@@ -28,7 +28,7 @@ const registerUser= asyncHandler(async (req,res) => {
 
 
 
-    const existedUser=User.findOne({       //User directly interact with database
+    const existedUser=await User.findOne({       //User directly interact with database
         $or:[{username},{email}]
     } )
     
@@ -38,13 +38,13 @@ const registerUser= asyncHandler(async (req,res) => {
     
   
 
-    const avatarLocalPath=req.files?.avatar[0]?.path;  //yeh abhi server pe hi,cloudinary pe nahi gaya
+    const avatarLocalPath=req.files?.avatar?.[0]?.path;  //yeh abhi server pe hi,cloudinary pe nahi gaya
     const coverImageLocalPath=req.files?.coverImage[0]?.path;  //yeh abhi server pe hi,cloudinary pe nahi gaya
 
     if(!avatarLocalPath){
         throw new ApiError(400,"Avatar file is required");
         
-    }
+    }  
 
    const avatar= await uploadOnCloudinary(avatarLocalPath)
    const coverImage= await uploadOnCloudinary(coverImageLocalPath)
@@ -54,12 +54,12 @@ const registerUser= asyncHandler(async (req,res) => {
    }
     
    const user=await User.create({            //User hi toh hai joh db se baat kar raha hai
-    fullName,
+    fullName, //PASSING RAW DATA
     avatar:avatar.url,
     coverImage : coverImage?.url|| "",
     email,
     password,
-    username:username.toLowerCase()
+    username:username.toUpperCase()
 
 
    })
@@ -72,7 +72,7 @@ const registerUser= asyncHandler(async (req,res) => {
     throw new ApiError(500,"Something went wrong while registering the user")
    }
 
-  return res.status(201).json(
+  return res.status(201).json(        //this res is only for PostMan.agar yeh nahi likhoge toh bhi data entry store hogi DB pe
     new ApiResponse(200,createdUser,"user registered successfully")
   )
 

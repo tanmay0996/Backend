@@ -3,6 +3,7 @@ import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {User} from "../models/user.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
+import jwt from "jsonwebtoken"
 
 
 const generateAccessandRefrshToken= async (userId)=>{  //web req nahi kar rahe isliye NO asyncHandler
@@ -20,6 +21,8 @@ const generateAccessandRefrshToken= async (userId)=>{  //web req nahi kar rahe i
         throw new ApiError(500,"something went wrong while generating Access and refresh token")
     }
 }
+
+
 
 
 const registerUser= asyncHandler(async (req,res) => {   
@@ -144,7 +147,7 @@ const loginUser= asyncHandler(async (req,res) => {
     return res                            // req/res ke pass bhi cookie ka access hai via cookieParser(middleware)
     .status(200)
     .cookie("accessToken",accessToken,options)
-    .cookie("refreshToken",refreshToken,options)
+    .cookie("refreshToken",refreshToken,options) //syntax:("cookie name(by which u want to store)",it's value)
     .json(
         new ApiResponse(
             200,
@@ -185,7 +188,53 @@ const logoutUser=asyncHandler(async (req,res) => {
     .json(new ApiResponse(200,{},"User loggedOut Successfully"))
 })
 
+const refreshAccessToken= asyncHandler(async (req,res) => {
+    const incomingRefreshToken=req.cookies.refreshToken|| req.body.refreshToken 
+    if(!incomingRefreshToken){
+        throw new ApiError(401,"refreshToken not received")
+    }
+
+    try {
+        const decodedToken=jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET)
+    
+        const user=await User.findById(decodedToken?._id)
+        if(!user){
+            throw new ApiError(401,"Refresh token is invalid")
+    
+        }
+        if(incomingRefreshToken!==user?.refreshToken){
+            throw new ApiError(401,"refreshToken expired or used")
+    
+        }
+    //verification done(ab new access token dedo)[anyways new refreshToken bhi dena hota hai so that the cycle continues and user doesn't have to login again ]
+        const {refreshToken:newRefreshToken, accessToken}=await generateAccessandRefrshToken(user._id)
+    
+        const options={
+            httpOnly:true,
+            secure:true
+        }
+        
+        return res
+        .status(200)
+        .cookie("accessToken",accessToken,options)
+        .cookie("refreshToken",newRefreshToken,options)  
+        .json(new ApiResponse(200,
+            {
+                accessToken,
+                refreshToken:newRefreshToken //in json we are sending the complete object
+                //  while in cookie we are sending the value only
+            },"accessToken renewed"
+        ))
+    
+    } catch (error) {
+        throw new ApiError(401,error?.message || "invalid refreshToken")
+        
+    }
+
+    
+})
 
 
 
-export {registerUser,loginUser,logoutUser}       // agar export { }ese kar rahe toh imprt bhi { } karna hoga
+
+export {registerUser,loginUser,logoutUser,refreshAccessToken}       // agar export { }ese kar rahe toh imprt bhi { } karna hoga

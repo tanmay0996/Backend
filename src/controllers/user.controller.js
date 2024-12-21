@@ -4,6 +4,7 @@ import {ApiResponse} from "../utils/ApiResponse.js"
 import {User} from "../models/user.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken"
+import { emit } from "nodemon"
 
 
 const generateAccessandRefrshToken= async (userId)=>{  //web req nahi kar rahe isliye NO asyncHandler
@@ -84,7 +85,7 @@ const registerUser= asyncHandler(async (req,res) => {
     coverImage : coverImage?.url|| "",
     email,
     password,
-    username:username.toUpperCase()
+    username:username.toLowerCase()
 
 
    })
@@ -269,7 +270,7 @@ const updateAccountDetails= asyncHandler(async (req,res) => {
     if(!fullName || !email){
         throw new ApiError(400,"All fields are required")
     }
-    const user=User.findByIdAndUpdate(
+    const user=await User.findByIdAndUpdate(
         req.user?._id,//req.user from auth mid
         {
             $set:{
@@ -354,6 +355,79 @@ const updateCoverImage=asyncHandler(async (req,res) => {
     
 })
 
+const getUserChannelProfile = asyncHandler(async (req,res) => {
+    //jab user kisi channel ki profile pe jate ho==> url pe jate ho:https://www.youtube.com/@CodeWithHarry
+    //toh user url se milega
+    const {username}=req.params
+
+    if(!username?.trim()) {//trim lagaya q ki username string(url) se aa raha is baar
+    
+        throw new ApiError(400,"username is missing")
+    }
+    const channel=await User.aggregate([
+        {//1st pipeline
+            $match:{//will filter and give 1 document
+                username:username?.toLowerCase()  //url ke username ko dund raha DB ke username may
+            }
+        },
+        {//User.model ko Subscription.model se connect
+            $lookup:{  //sare doc ko igatha karke rakhlega. kisme??-->subscribers name ki field may
+                from:"subscriptions",        //Subscription-->subscriptions(will look like this in db)
+                localField:"_id",
+                foreignField:"channel",       //no.of subscriber janne ke liye
+                as:"subscribers"            //subscribers name ka arr return hoga / yeh ek field hai
+            }
+        },
+        {
+            $lookup:{
+                from:"subscriptions",
+                localField:"-id",
+                foreignField:"subscriber",
+                as:"subscribedTo"
+            }
+        },{
+            $addFields:{ //User.model ke fields + 3 additional fields in one obj
+                subscriptionCount:{
+                    $size:"$subscribers"  //joh doc igatha hue subscribers may unko count
+                },
+                channelsSubscribedToCount:{
+                    $size:"$subscribedTo"
+                },
+                isSubscribed:{ //yeh frontend wale ke liye (subscribe button)
+                    $cond:{
+                        if:{$in:[req.user?._id,"$subscribers.subscriber"]},
+                        then:true,
+                        else:false
+                    }
+                }
+            }
+        },
+        {
+            $project:{ //selected cheeze denge
+                fullName:1,
+                username:1,
+                subscriptionCount:1,
+                channelsSubscribedToCount:1,
+                isSubscribed:1,
+                avatar:1,
+                coverImage:1,
+                email:1 
+
+
+            }
+        }
+    ])
+
+    if(!channel?.length){
+        throw new ApiError(404,"channel doesn't exist")
+
+    }
+    return res
+    .status(200)
+    .json(new ApiResponse(200,channel[0],"User channel fetched successfully"))
+    
+})
+
 export {
     registerUser,
     loginUser,
@@ -363,5 +437,6 @@ export {
     getCurrentUser,
     updateAccountDetails,
     updateAvatar,
-    updateCoverImage}       // agar export { }ese kar rahe toh imprt bhi { } karna hoga
+    updateCoverImage,
+    getUserChannelProfile}       // agar export { }ese kar rahe toh imprt bhi { } karna hoga
 

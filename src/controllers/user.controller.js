@@ -4,7 +4,8 @@ import {ApiResponse} from "../utils/ApiResponse.js"
 import {User} from "../models/user.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken"
-import { emit } from "nodemon"
+// import { emit } from "nodemon"
+import mongoose from "mongoose"
 
 
 const generateAccessandRefrshToken= async (userId)=>{  //web req nahi kar rahe isliye NO asyncHandler
@@ -323,6 +324,7 @@ const updateAvatar=asyncHandler(async (req,res) => {
 })
 
 const updateCoverImage=asyncHandler(async (req,res) => {
+    
     const coverImageLocalPath=req.files?.path        //server(local) pe aa gaya hai
 
     if(!coverImageLocalPath){
@@ -428,6 +430,66 @@ const getUserChannelProfile = asyncHandler(async (req,res) => {
     
 })
 
+const getWatchHistory= asyncHandler(async (req,res) => {
+     const user= await User.aggregate([
+        {
+            $match:{ //us user ka doc leke aaye jiska watchHistory cahhiye
+                _id:new mongoose.Types.ObjectId(req.user._id)
+            }
+            // _id:req.user._id  will return a string whileworking with MDB pipeline
+            
+        },
+        {//uski "watchHistory" ko connect kiya "videos" se through "_id"
+            $lookup:{
+                from:"videos",
+                localField:"watchHistory",
+                foreignField:"_id",
+                as:"watchHistory",//yeh RESPONSE may jaega
+                pipeline:[ //sub pipeline se videos -->"owner" hai usey connect kiya "user "se through "_id"
+                    {
+                        $lookup:{
+                            from:"users",
+                            localField:"owner",
+                            foreignField:"_id",
+                            as:"owner",
+                            pipeline:[
+                                {//specific prop hi chahiye "user "se
+                                    $project:{
+                                       fullName:1,
+                                       username:1,
+                                       avatar:1
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    //return owner=[doc1doc2doc3...,bullshit,garbage]
+                    //we want array 1st element only
+                    {
+                        $addFields:{
+                            owner:{//rewrite "owner field"
+                                $first:"$owner"
+                            }
+                        }
+                    }
+                    //return owner=doc1doc2doc3..
+                    
+                ]
+            }
+        }
+     ])
+
+     return res
+     .status(200)
+     .json(
+        new ApiResponse(
+            200,
+            user[0].watchHistory, //agg pipeline se 1st value chahiye aur usmay se watchHistory
+            "watchHistory fetched successfully"
+        )
+     )
+})
+
 export {
     registerUser,
     loginUser,
@@ -438,5 +500,6 @@ export {
     updateAccountDetails,
     updateAvatar,
     updateCoverImage,
-    getUserChannelProfile}       // agar export { }ese kar rahe toh imprt bhi { } karna hoga
+    getUserChannelProfile,
+    getWatchHistory}       // agar export { }ese kar rahe toh imprt bhi { } karna hoga
 

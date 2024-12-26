@@ -9,7 +9,7 @@ const subscriptionSchema=new mongoose.Schema(
         channel:{//channel bhi toh ek user hai
             type:mongoose.Schema.Types.ObjectId,  //one to whom 'subscriber' is subscribing
             ref:"User"
-        }
+        },
         
     }
     ,{timestamps:true})

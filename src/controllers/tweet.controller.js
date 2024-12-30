@@ -1,8 +1,8 @@
 import mongoose, { isValidObjectId, Schema } from "mongoose";
-import { Tweet } from "../models/tweet.model";
-import { ApiError } from "../utils/ApiError";
-import { ApiResponse } from "../utils/ApiResponse";
-import { asyncHandler } from "../utils/asyncHandler";
+import { Tweet } from "../models/tweet.model.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 
 const createTweet=asyncHandler(async (req,res) => {
@@ -80,13 +80,21 @@ const deleteTweet=asyncHandler(async (req,res) => {
     const tweet= await Tweet.findById(tweetId)
 
     if(!tweet){
+        console.log(`tweet:${tweet}`)
+        
         throw new ApiError(404,"tweet not found")
 
     }
 
-    if(tweet.owner.toString()!==req.user?._id){
-        throw new ApiError(403,"U are not authorized to delete this tweet")
+    // if(tweet.owner.toString()!==req.user?._id.toString()){
+    //     console.log(`Owner of tweet: ${tweet.owner.toString()}, Logged-in user: ${req.user?._id}`);
+    //     throw new ApiError(403,"U are not authorized to delete this tweet")
+    // }
+    if (!tweet.owner.equals(req.user?._id)) {
+        console.log(`Owner of tweet: ${tweet.owner}, Logged-in user: ${req.user?._id}`);
+        throw new ApiError(403, "You are not authorized to delete this tweet");
     }
+    
     
     await Tweet.findByIdAndDelete(tweetId)
 
@@ -95,7 +103,7 @@ const deleteTweet=asyncHandler(async (req,res) => {
     .json(new ApiResponse(200,null,"tweet deleted successfully"))
 })
 
-const getUserTweet=asyncHandler(async (req,res) => {
+const getUserTweets=asyncHandler(async (req,res) => {
 
     const {userId}=req.params;  //owner ki id 
 
@@ -106,7 +114,8 @@ const getUserTweet=asyncHandler(async (req,res) => {
     const tweets= await Tweet.aggregate([
         {
             $match:{
-                owner:new mongoose.Types.ObjectId(userId)
+                owner:new mongoose.Types.ObjectId(userId)  //pipeline may batana padta hai ese
+                // owner:userId// WRONG
             }
         },
         {
@@ -194,6 +203,6 @@ export{
     createTweet,
     updateTweet,
     deleteTweet,
-    getUserTweet
+    getUserTweets
 
 }

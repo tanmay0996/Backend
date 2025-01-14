@@ -18,6 +18,17 @@ const uploadOnCloudinary= async (loacalFilePath) => {
         //upload file on cloudinary
         const response= await cloudinary.uploader.upload(loacalFilePath,{resource_type:'auto'})
 
+// response object include multiple fields
+ /*{
+  "public_id": "unique-id-generated-by-cloudinary",
+  "url": "https://res.cloudinary.com/.../file-url",
+  "secure_url": "https://.../secure-file-url",
+  "resource_type": "video",
+  "duration": 120.5,
+  ...
+}
+*/
+
         // console.log("File is uploaded successfully",response.url);
              // THIS IS FOR TESTING PURPOSE
 
@@ -33,6 +44,8 @@ const uploadOnCloudinary= async (loacalFilePath) => {
     }
     
 }
+
+
 
 export {uploadOnCloudinary}
 

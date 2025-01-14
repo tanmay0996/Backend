@@ -3,6 +3,10 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiError } from "../utils/ApiError.js";
 import {Video} from "../models/video.model.js"
 import {ApiResponse}from "../utils/ApiResponse.js"
+import {
+    uploadOnCloudinary,
+    deleteOnCloudinary
+} from "../utils/cloudinary.js";
 
 const getAllVideos=asyncHandler(async (req,res) => { //filtering finctionality
 
@@ -94,6 +98,69 @@ const getAllVideos=asyncHandler(async (req,res) => { //filtering finctionality
     
 })
 
+const publishAVideo= asyncHandler(async (req,res) => {
+    //for this functionality 4 files are required
+    /*1.controller(jismay likh rahe ho)
+      2.multer.middleware
+      3.cloudinary.js
+      4.video.route.js*/
+
+    const {title,description}=req.body
+    if([title,description].some((field)=>field?.trim()==="")){
+        throw new ApiError(400,"All fields are required")
+    }
+
+    const videoFileLocalPath = req.files?.videoFile[0].path;  //videoFile route se aya
+    const thumbnailLocalPath = req.files?.thumbnail[0].path;
+
+    if (!videoFileLocalPath) {
+        throw new ApiError(400, "videoFileLocalPath is required");
+    }
+
+    if (!thumbnailLocalPath) {
+        throw new ApiError(400, "thumbnailLocalPath is required");
+    }
+
+    const videoFile = await uploadOnCloudinary(videoFileLocalPath);
+    const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
+
+    if (!videoFile) {
+        throw new ApiError(400, "Video file not found");
+    }
+
+    if (!thumbnail) {
+        throw new ApiError(400, "Thumbnail not found");
+    }
+
+    const video= await Video.create({
+        title,
+        description,
+        duration:videoFile.duration,
+        videoFile:{
+            url:videoFile.url,         // cloudinary response obj se aa raha hai
+            public_id: videoFile.public_id // cloudinary response obj se aa raha hai
+        },
+        thumbnail:{
+            url:thumbnail.url,
+            public_id:thumbnail.public_id
+        },
+        owner:req.user?._id,
+        isPublished:false
+
+    })
+
+    const videoUpload=await Video.findById(video._id);
+
+    if(!videoUpload){
+        throw new ApiError(500,"Video is not uploaded")
+    }
+    return res
+        .status(200)
+        .json(new ApiResponse(200,video,"video uploaded successfully"))
+
+})
+
 export {
     getAllVideos,
+    publishAVideo
 }

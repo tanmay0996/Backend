@@ -111,8 +111,8 @@ const publishAVideo= asyncHandler(async (req,res) => {
         throw new ApiError(400,"All fields are required")
     }
 
-    const videoFileLocalPath = req.files?.videoFile[0].path;  //videoFile route se aya
-    const thumbnailLocalPath = req.files?.thumbnail[0].path;
+    const videoFileLocalPath = req.files?.videoFile?.[0]?.path;  //videoFile route se aya
+    const thumbnailLocalPath = req.files?.thumbnail?.[0]?.path;
 
     if (!videoFileLocalPath) {
         throw new ApiError(400, "videoFileLocalPath is required");
@@ -137,14 +137,17 @@ const publishAVideo= asyncHandler(async (req,res) => {
         title,
         description,
         duration:videoFile.duration,
-        videoFile:{
-            url:videoFile.url,         // cloudinary response obj se aa raha hai
-            public_id: videoFile.public_id // cloudinary response obj se aa raha hai
-        },
-        thumbnail:{
-            url:thumbnail.url,
-            public_id:thumbnail.public_id
-        },
+        // videoFile:{
+        //     url:videoFile.url,         // cloudinary response obj se aa raha hai
+        //     public_id: videoFile.public_id // cloudinary response obj se aa raha hai
+        // },
+        // thumbnail:{
+        //     url:thumbnail.url,
+        //     public_id:thumbnail.public_id
+        // },
+        videoFile:videoFile.url,
+        thumbnail:thumbnail.url,
+
         owner:req.user?._id,
         isPublished:false
 

@@ -19,7 +19,7 @@ app.use(cookieParser())
 //importing Routes
 import userRouter from "./routes/user.routes.js"  //coustomize name
 import tweetRouter from "./routes/tweet.routes.js";
-
+import videoRouter from "./routes/video.routes.js";
 
 
 
@@ -33,6 +33,6 @@ app.use("/api/v1/users",userRouter)         // /users pe userRouter(middleware) 
 //http://localhost:8000/api/v1/users/register
 app.use("/api/v1/tweet", tweetRouter);
 
-
+app.use("/api/v1/video", videoRouter);
 
 export {app}

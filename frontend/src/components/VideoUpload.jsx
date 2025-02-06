@@ -46,6 +46,8 @@ const VideoUpload = () => {
       });
 
       setMessage("Video published successfully!");
+      console.log("Video publish successfully");
+      
       // Optionally reset the form and local state
       reset();
       setVideoFile(null);

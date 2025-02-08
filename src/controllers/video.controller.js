@@ -149,7 +149,7 @@ const publishAVideo= asyncHandler(async (req,res) => {
         thumbnail:thumbnail.url,
 
         owner:req.user?._id,
-        isPublished:false
+        isPublished:true
 
     })
 
@@ -252,7 +252,7 @@ const getVideoById = asyncHandler(async(req, res) => {// video pe click karne pe
         },
         {
             $project: {
-                "videoFile.url": 1,
+                videoFile: 1,
                 title: 1,
                 description: 1,
                 views: 1,

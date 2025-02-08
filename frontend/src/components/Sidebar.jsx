@@ -1,6 +1,8 @@
 // src/components/Sidebar.js
 import React from "react";
-import { FaHome, FaClock, FaVideo, FaFolder, FaUsers } from "react-icons/fa";
+import { FaHome, FaClock, FaVideo, FaFolder, FaUsers, } from "react-icons/fa";
+import { PiUploadFill } from "react-icons/pi";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   return (
@@ -9,8 +11,15 @@ const Sidebar = () => {
         <span className="bg-purple-500 p-2 rounded">▶</span> YouTube
       </h1>
       <ul className="mt-5 space-y-3">
-        <li className="bg-purple-600 p-2 rounded flex items-center gap-2">
+        {/* <li className="bg-purple-600 p-2 rounded flex items-center gap-2">
           <FaHome /> Home
+        </li> */}
+        <li>
+          <Link to="/"
+          className="bg-purple-600 p-2 rounded flex items-center gap-2"
+          >
+          <FaHome />Home
+          </Link>
         </li>
         <li className="p-2 flex items-center gap-2 hover:bg-gray-700 rounded">
           <FaClock /> Liked Videos
@@ -24,6 +33,16 @@ const Sidebar = () => {
         <li className="p-2 flex items-center gap-2 hover:bg-gray-700 rounded">
           <FaUsers /> Subscriptions
         </li>
+        
+      
+        <li>
+          <Link to="/video-upload"
+          className="p-2 flex items-center gap-2 hover:bg-gray-700 rounded"
+          >
+          <PiUploadFill/>Upload-Video
+          </Link>
+        </li>
+        
       </ul>
     </div>
   );

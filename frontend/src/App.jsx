@@ -6,14 +6,29 @@ import RegistrationForm from './components/RegistrationForm'
 import VideoUpload from "./components/VideoUpload"
 import LoginPage from './components/LoginPage.jsx'
 
+import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar";
+import Homepage from "./components/Homepage.jsx";
+
+
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-     <RegistrationForm/>
+     {/* <RegistrationForm/>
      <LoginPage/>
-     <VideoUpload/>
+     <VideoUpload/> */}
+
+<div className="flex h-screen bg-black text-white">
+      <Sidebar />
+      <div className="flex-1 flex flex-col">
+        <Navbar />
+        <Homepage />
+      </div>
+    </div>
+     
+
 
 
 

@@ -17,11 +17,12 @@ function App() {
         {/* All routes that share the same layout */}
         <Route element={<Layout />}>   {/* using it as a parent wrapper*/ }
           <Route path="/" element={<Homepage />} />
-          <Route path="video/v/:videoId" element={<VideoPlayer />} />
+          
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/video-upload" element={<VideoUpload />} />
         </Route>
+        <Route path="video/v/:videoId" element={<VideoPlayer />} />
       </Routes>
     </Router>
   );

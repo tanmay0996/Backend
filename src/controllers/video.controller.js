@@ -106,6 +106,12 @@ const publishAVideo= asyncHandler(async (req,res) => {
       3.cloudinary.js
       4.video.route.js*/
 
+      if (!req.user) {
+        return res
+          .status(401)
+          .json({ status: 401, message: "User is not logged in" });
+      }
+
     const {title,description}=req.body
     if([title,description].some((field)=>field?.trim()==="")){
         throw new ApiError(400,"All fields are required")

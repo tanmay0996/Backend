@@ -13,7 +13,7 @@ const VideoUpload = () => {
     const file = e.target.files[0];
     if (file) {
       setVideoFile(file);
-      // We register the file in our form state
+      // Register the file in the form state
       setValue("videoFile", file);
     }
   };
@@ -27,34 +27,35 @@ const VideoUpload = () => {
   };
 
   const onSubmit = async (data) => {
-    // Create FormData instance for file upload
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
-    formData.append("videoFile", data.videoFile); // field name expected by your route
-    formData.append("thumbnail", data.thumbnail); // field name expected by your route
+    formData.append("videoFile", data.videoFile);
+    formData.append("thumbnail", data.thumbnail);
 
     try {
       setUploading(true);
       setMessage("");
-      // Adjust the base URL if needed, or use a proxy in your development environment
       const response = await axios.post("http://localhost:8000/api/v1/video", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true, // if your API requires cookies (e.g., JWT in cookies)
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
       });
 
       setMessage("Video published successfully!");
-      console.log("Video publish successfully");
-      
+      console.log("Video published successfully");
+
       // Optionally reset the form and local state
       reset();
       setVideoFile(null);
       setThumbnailPreview(null);
     } catch (error) {
+      // Guard against error.response being undefined
+      if (error.response && error.response.status === 401) {
+        setMessage("User is not logged in!!!!");
+      } else {
+        setMessage("Failed to publish video. Please try again.");
+      }
       console.error("Error publishing video:", error);
-      setMessage("Failed to publish video. Please try again.");
     } finally {
       setUploading(false);
     }

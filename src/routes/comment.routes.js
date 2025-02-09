@@ -15,8 +15,8 @@ router.use(verifyJWT, upload.none());
 
 // Routes for fetching and adding comments for a specific video
 router.route("/video/:videoId")
-    .get(getVideoComments)  // GET /api/comments/video/:videoId - Fetch comments for a video
-    .post(addComment);      // POST /api/comments/video/:videoId - Add a new comment to a video
+    .get(getVideoComments)  // GET /api/v1/comment/video/:videoId - Fetch comments for a video
+    .post(addComment);      // POST /api/v1comment/video/:videoId - Add a new comment to a video
 
 // Routes for updating and deleting a specific comment
 router.route("/:commentId")

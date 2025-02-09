@@ -2,9 +2,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import Comments from "./Comments"; // Import the Comments component
 
 const VideoPlayer = () => {
-  const { videoId } = useParams(); // Get the videoId from the URL
+  const { videoId } = useParams();
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -12,14 +13,11 @@ const VideoPlayer = () => {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        // Adjust the URL to match your backend endpoint
         const response = await axios.get(
           `http://localhost:8000/api/v1/video/v/${videoId}`,
           { withCredentials: true }
         );
-        // Assuming the controller returns an object with video details in data.data
         setVideo(response.data.data);
-        console.log(response);
       } catch (err) {
         console.error("Error fetching video:", err);
         setError("Failed to load video details.");
@@ -39,7 +37,7 @@ const VideoPlayer = () => {
     <div className="w-full max-w-4xl mx-auto">
       {/* Video Player */}
       <div className="w-full bg-black rounded-lg overflow-hidden">
-        <video className="w-full h-96  p-1" controls>
+        <video className="w-full h-96 p-1" controls>
           <source src={video.videoFile} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
@@ -47,7 +45,6 @@ const VideoPlayer = () => {
 
       {/* Video Details */}
       <div className="mt-4 p-2">
-        {/* Uploader details */}
         {video.owner && (
           <div className="flex items-center mb-2">
             <img
@@ -59,13 +56,15 @@ const VideoPlayer = () => {
           </div>
         )}
 
-        {/* Video title and other details */}
         <h1 className="text-2xl font-bold">{video.title}</h1>
         <p className="text-gray-500">
           {new Date(video.createdAt).toLocaleDateString()} • {video.views} Views
         </p>
         <p className="mt-2 text-gray-700">{video.description}</p>
       </div>
+
+      {/* Comments Section */}
+      <Comments videoId={videoId} />
     </div>
   );
 };

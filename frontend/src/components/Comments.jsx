@@ -38,7 +38,6 @@ const Comments = ({ videoId }) => {
         { content: commentText },
         { withCredentials: true }
       );
-
       setCommentText("");
       fetchComments();
     } catch (err) {
@@ -57,6 +56,36 @@ const Comments = ({ videoId }) => {
     } catch (err) {
       console.error("Error deleting comment", err);
       setError("Failed to delete comment.");
+    }
+  };
+
+  const handleToggleCommentLike = async (commentId) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/api/v1/likes/toggle/c/${commentId}`,
+        {},
+        { withCredentials: true }
+      );
+      // Assume the API returns { data: { isLiked: true/false } }
+      const { isLiked } = response.data.data;
+
+      // Update the specific comment's likes count and like status in state.
+      setComments((prevComments) =>
+        prevComments.map((comment) => {
+          if (comment._id === commentId) {
+            return {
+              ...comment,
+              isLiked,
+              likesCount: isLiked
+                ? comment.likesCount + 1
+                : comment.likesCount - 1,
+            };
+          }
+          return comment;
+        })
+      );
+    } catch (err) {
+      console.error("Error toggling comment like", err);
     }
   };
 
@@ -105,6 +134,12 @@ const Comments = ({ videoId }) => {
                 {comment.likesCount} Likes
               </span>
               <button
+                onClick={() => handleToggleCommentLike(comment._id)}
+                className="text-blue-500 hover:text-blue-400 text-sm transition mr-2"
+              >
+                {comment.isLiked ? "Unlike" : "Like"}
+              </button>
+              <button
                 onClick={() => handleDeleteComment(comment._id)}
                 className="text-red-500 hover:text-red-400 text-sm transition"
               >
@@ -114,7 +149,9 @@ const Comments = ({ videoId }) => {
           </div>
         ))
       ) : (
-        <p className="text-gray-400">No comments yet. Be the first to comment!</p>
+        <p className="text-gray-400">
+          No comments yet. Be the first to comment!
+        </p>
       )}
     </div>
   );

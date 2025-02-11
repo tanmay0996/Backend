@@ -20,7 +20,7 @@ const toggleVideoLike=asyncHandler(async (req,res) => {
     })
 
     if(likeAlready){
-        await Like.findByIdAndUpdate(likeAlready?._id)
+        await Like.findByIdAndDelete(likeAlready?._id)
         return res
         .status(200)
         .json(

@@ -9,6 +9,8 @@ const VideoPlayer = () => {
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [likeCount, setLikeCount] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -17,7 +19,12 @@ const VideoPlayer = () => {
           `http://localhost:8000/api/v1/video/v/${videoId}`,
           { withCredentials: true }
         );
-        setVideo(response.data.data);
+        const videoData = response.data.data;
+        setVideo(videoData);
+
+        // Initialize like count and status from API response.
+        setLikeCount(videoData.likeCount || 0);
+        setIsLiked(videoData.isLiked || false);
       } catch (err) {
         console.error("Error fetching video:", err);
         setError("Failed to load video details.");
@@ -28,6 +35,27 @@ const VideoPlayer = () => {
 
     fetchVideo();
   }, [videoId]);
+
+  const handleLike = async () => {
+    try {
+      // Call the toggle like API endpoint.
+      const response = await axios.post(
+        `http://localhost:8000/api/v1/likes/toggle/v/${videoId}`,
+        {},
+        { withCredentials: true }
+      );
+      // The API is expected to return { data: { isLiked: true/false } }.
+      const { isLiked: updatedLikeStatus } = response.data.data;
+
+      // Update the like count based on whether the video is now liked or unliked.
+      setLikeCount((prevCount) =>
+        updatedLikeStatus ? prevCount + 1 : prevCount - 1
+      );
+      setIsLiked(updatedLikeStatus);
+    } catch (err) {
+      console.error("Error toggling like:", err);
+    }
+  };
 
   if (loading) return <div className="p-4 text-white">Loading video...</div>;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
@@ -64,10 +92,15 @@ const VideoPlayer = () => {
 
           {/* Action Buttons */}
           <div className="mt-4 md:mt-0 flex items-center space-x-4">
-            <button className="flex items-center space-x-1 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded">
-              {/* Replace these with your favorite icons if desired */}
-              <span>👍</span>
-              <span>Like</span>
+            <button
+              onClick={handleLike}
+              className="flex items-center space-x-1 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded"
+            >
+              {/* Optionally, update icon appearance based on like state */}
+              <span>{isLiked ? "👍" : "👍"}</span>
+              <span>
+                Like {likeCount > 0 && <span className="ml-1">{likeCount}</span>}
+              </span>
             </button>
             <button className="flex items-center space-x-1 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded">
               <span>↗</span>

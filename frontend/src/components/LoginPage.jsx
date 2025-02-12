@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext'; // Adjust the path as needed
 
 const LoginPage = () => {
   const [username, setUsername] = useState(''); // or email, depending on your backend logic
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   
+  const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -26,16 +28,15 @@ const LoginPage = () => {
       // Log the response to see what data is returned
       console.log('Login successful:', response.data);
 
-      // Store the user data in localStorage
-      // Adjust this based on your response structure; here we store response.data.data.user
-      localStorage.setItem("currentUser", JSON.stringify(response.data.data.user));
+      // Update the auth context with the logged-in user's details.
+      // Adjust the property based on your response structure.
+      setUser(response.data.data.user);
       
-      // Optionally, you might also want to store tokens if needed:
-      // localStorage.setItem("accessToken", response.data.data.accessToken);
-      // localStorage.setItem("refreshToken", response.data.data.refreshToken);
-      
+      // If needed, you can also store tokens here, but the context persistence will handle user details.
+      // e.g., localStorage.setItem("accessToken", response.data.data.accessToken);
+
       // Navigate to a protected route (update the route as needed)
-      navigate('/dashboard'); 
+      navigate('/'); 
       
     } catch (err) {
       console.error('Login error:', err);

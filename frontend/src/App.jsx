@@ -9,9 +9,11 @@ import Layout from './components/Layout';
 import VideoPlayer from './components/VideoPlayer.jsx';
 
 import './App.css';
+import { AuthProvider } from './context/AuthContext.jsx';
 
 function App() {
   return (
+   <AuthProvider>
     <Router>
       <Routes>
         {/* All routes that share the same layout */}
@@ -25,6 +27,7 @@ function App() {
         <Route path="video/v/:videoId" element={<VideoPlayer />} />
       </Routes>
     </Router>
+    </AuthProvider> 
   );
 }
 

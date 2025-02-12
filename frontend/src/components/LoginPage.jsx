@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // if you plan to navigate after login
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [username, setUsername] = useState(''); // or email, depending on your backend logic
@@ -15,25 +15,31 @@ const LoginPage = () => {
 
     try {
       // Make a POST request to your backend login endpoint.
-      // Adjust the URL based on your backend configuration (e.g., http://localhost:5000/api/users/login)
       const response = await axios.post(
         'http://localhost:8000/api/v1/users/login',
         { username, password },
         {
-          withCredentials: true, // ensure cookies (like tokens) are sent and received
+          withCredentials: true, // ensures cookies (like tokens) are sent and received
         }
       );
 
       // Log the response to see what data is returned
       console.log('Login successful:', response.data);
 
-      // You might want to store the user data in context or redirect the user.
-      // For example, using react-router:
-      navigate('/dashboard'); // replace '/dashboard' with your desired route
+      // Store the user data in localStorage
+      // Adjust this based on your response structure; here we store response.data.data.user
+      localStorage.setItem("currentUser", JSON.stringify(response.data.data.user));
+      
+      // Optionally, you might also want to store tokens if needed:
+      // localStorage.setItem("accessToken", response.data.data.accessToken);
+      // localStorage.setItem("refreshToken", response.data.data.refreshToken);
+      
+      // Navigate to a protected route (update the route as needed)
+      navigate('/dashboard'); 
       
     } catch (err) {
       console.error('Login error:', err);
-      // Handle errors – you may need to adjust based on your backend error structure
+      // Handle errors – adjust based on your backend error structure
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     }
   };

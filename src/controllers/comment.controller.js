@@ -6,120 +6,133 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 
-const getVideoComments = asyncHandler(async(req, res) => {
+const getVideoComments = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
     const { page = 1, limit = 10 } = req.query;
-
-    const video = Video.findById(videoId)
-
-    if(!video){
-        throw new ApiError(404, "Video not found");
+  
+    const video = await Video.findById(videoId);
+    if (!video) {
+      throw new ApiError(404, "Video not found");
     }
-
+  
     const commentsAggregate = Comment.aggregate([
-        {
-            $match: {
-                video: new mongoose.Types.ObjectId(videoId)
-            }
+      {
+        $match: {
+          video: new mongoose.Types.ObjectId(videoId),
         },
-        {
-            $lookup: {
-                from: "users",
-                localField: "owner",
-                foreignField: "_id",
-                as: "owner"
-            }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "owner",
+          foreignField: "_id",
+          as: "owner",
         },
-        {
-            $lookup: {
-                from: "likes",
-                localField: "_id",
-                foreignField: "comment",
-                as: "likes"
-            }
+      },
+      {
+        $lookup: {
+          from: "likes",
+          localField: "_id",
+          foreignField: "comment",
+          as: "likes",
         },
-        {
-            $addFields: {
-                likesCount: {
-                    $size: "$likes"
-                },
-                owner: {
-                    $first: "$owner"
-                },
-                isLiked: {
-                    $cond: {
-                        if: { $in: [req.user?._id, "$likes.likedBy"]},
-                        then: true,
-                        else: false,
-                    }
-                }
-            }
+      },
+      {
+        $addFields: {
+          likesCount: { $size: "$likes" },
+          owner: { $first: "$owner" },
+          isLiked: {
+            $cond: {
+              if: { $in: [req.user?._id, "$likes.likedBy"] },
+              then: true,
+              else: false,
+            },
+          },
+          // Add isOwner field: compare logged in user's id with comment owner's id.
+          isOwner: {
+            $eq: [
+              new mongoose.Types.ObjectId(req.user._id),
+              "$owner._id",
+            ],
+          },
         },
-        {
-            $sort: {
-                createdAt: -1,
-            }
+      },
+      {
+        $sort: {
+          createdAt: -1,
         },
-        {
-            $project: {
-                content: 1,
-                createdAt: 1,
-                likesCount: 1,
-                owner: {
-                    username: 1,
-                    fullName: 1,
-                    avatar: 1
-                },
-                isLiked: 1
-            }
+      },
+      {
+        $project: {
+          content: 1,
+          createdAt: 1,
+          likesCount: 1,
+          owner: {
+            _id: 1, 
+            username: 1,
+            fullName: 1,
+            avatar: 1,
+          },
+          isLiked: 1,
+          isOwner: 1,
         },
-    ])
-
+      },
+    ]);
+  
     const options = {
-        page: parseInt(page, 10),
-        limit: parseInt(limit, 10)
-    }
-
-    const comments = await Comment.aggregatePaginate(
-        commentsAggregate,
-        options,
-    )
-    
+      page: parseInt(page, 10),
+      limit: parseInt(limit, 10),
+    };
+  
+    const comments = await Comment.aggregatePaginate(commentsAggregate, options);
+  
     return res
-        .status(200)
-        .json(
-            new ApiResponse(200, comments, "Comments fetched successfully")
-        )
-})
+      .status(200)
+      .json(
+        new ApiResponse(200, comments, "Comments fetched successfully")
+      );
+  });
+  
 
-const addComment = asyncHandler(async(req, res) => {
-    const {content} = req.body;
-    const {videoId} = req.params;
-
+  const addComment = asyncHandler(async (req, res) => {
+    const { content } = req.body;
+    const { videoId } = req.params;
+  
     if (!content) {
-        throw new ApiError(400, "Content is required");
+      throw new ApiError(400, "Content is required");
     }
-
-    const video = await Video.findById(videoId)
-
-    if(!video){
-        throw new ApiError(404, "Video not found");
+  
+    const video = await Video.findById(videoId);
+    if (!video) {
+      throw new ApiError(404, "Video not found");
     }
-
-    const comment = await Comment.create({
-        content,
-        video: videoId,
-        owner: req.user?._id,
+  
+    // Create the comment
+    let comment = await Comment.create({
+      content,
+      video: videoId,
+      owner: req.user?._id,
     });
-
-    if(!comment){
-        throw new ApiError(500, "Failed to add comment please try again");
+  
+    if (!comment) {
+      throw new ApiError(500, "Failed to add comment please try again");
     }
-
+  
+    // Populate the owner details (assuming your Comment model has a ref to User)
+    comment = await comment.populate("owner", "username fullName avatar");
+  
+    // Convert to a plain object so we can add additional fields
+    const commentObj = comment.toObject();
+  
+    // Add isOwner field to indicate if the logged-in user is the comment owner
+    commentObj.isOwner =
+      commentObj.owner._id.toString() === req.user._id.toString();
+  
     return res
-        .status(201)
-        .json(new ApiResponse(201, comment.content, "Comment added successfully"));
-})
+      .status(201)
+      .json(new ApiResponse(201, commentObj, "Comment added successfully"));
+  });
+  
 
 const updateComment = asyncHandler(async(req, res) => {
     const { commentId } = req.params;

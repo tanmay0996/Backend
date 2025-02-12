@@ -7,6 +7,11 @@ const Comments = ({ videoId }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Retrieve current user from localStorage (make sure it's stored on login)
+  const storedUser = localStorage.getItem("currentUser");
+  const currentUser = storedUser ? JSON.parse(storedUser) : null;
+  console.log("Current User:", currentUser);
+
   const fetchComments = async () => {
     setLoading(true);
     setError("");
@@ -15,6 +20,7 @@ const Comments = ({ videoId }) => {
         `http://localhost:8000/api/v1/comment/video/${videoId}`,
         { withCredentials: true }
       );
+      console.log("Fetched comments:", response.data.data.docs);
       setComments(response.data.data.docs);
     } catch (err) {
       console.error("Error fetching comments", err);
@@ -49,7 +55,7 @@ const Comments = ({ videoId }) => {
   const handleDeleteComment = async (commentId) => {
     try {
       await axios.delete(
-        `http://localhost:8000/api/comments/${commentId}`,
+        `http://localhost:8000/api/v1/comment/${commentId}`,
         { withCredentials: true }
       );
       fetchComments();
@@ -69,7 +75,6 @@ const Comments = ({ videoId }) => {
       // Assume the API returns { data: { isLiked: true/false } }
       const { isLiked } = response.data.data;
 
-      // Update the specific comment's likes count and like status in state.
       setComments((prevComments) =>
         prevComments.map((comment) => {
           if (comment._id === commentId) {
@@ -115,39 +120,62 @@ const Comments = ({ videoId }) => {
       ) : error ? (
         <p className="text-red-400">{error}</p>
       ) : comments.length > 0 ? (
-        comments.map((comment) => (
-          <div key={comment._id} className="mb-4 border-b border-gray-700 pb-2">
-            <div className="flex items-center mb-1">
-              <img
-                src={comment.owner.avatar}
-                alt={comment.owner.username}
-                className="w-8 h-8 rounded-full mr-2"
-              />
-              <span className="font-bold">{comment.owner.username}</span>
-              <span className="text-gray-400 ml-2 text-sm">
-                {new Date(comment.createdAt).toLocaleString()}
-              </span>
+        comments.map((comment) => {
+          console.log("Comment:", comment);
+
+          // Safely extract the owner ID
+          let ownerId = null;
+          if (comment.owner) {
+            if (typeof comment.owner === "object" && comment.owner._id) {
+              ownerId = comment.owner._id.toString();
+            } else if (typeof comment.owner === "string") {
+              ownerId = comment.owner;
+            }
+          }
+          const currentUserId =
+            currentUser && currentUser._id ? currentUser._id.toString() : null;
+
+          const isOwner = comment.isOwner || (currentUserId && ownerId && ownerId === currentUserId);
+
+          return (
+            <div key={comment._id} className="mb-4 border-b border-gray-700 pb-2">
+              <div className="flex items-center mb-1">
+                <img
+                  src={comment.owner && comment.owner.avatar ? comment.owner.avatar : ""}
+                  alt={comment.owner && comment.owner.username ? comment.owner.username : "User"}
+                  className="w-8 h-8 rounded-full mr-2"
+                />
+                <span className="font-bold">
+                  {comment.owner && comment.owner.username ? comment.owner.username : "Unknown"}
+                </span>
+                <span className="text-gray-400 ml-2 text-sm">
+                  {new Date(comment.createdAt).toLocaleString()}
+                </span>
+              </div>
+              <p className="text-gray-300">{comment.content}</p>
+              <div className="flex items-center mt-1">
+                <span className="text-sm text-gray-400 mr-2">
+                  {comment.likesCount} Likes
+                </span>
+                <button
+                  onClick={() => handleToggleCommentLike(comment._id)}
+                  className="text-blue-500 hover:text-blue-400 text-sm transition mr-2"
+                >
+                  {comment.isLiked ? "Unlike" : "Like"}
+                </button>
+                {/* Only show the Delete button if the logged-in user is the owner */}
+                {isOwner && (
+                  <button
+                    onClick={() => handleDeleteComment(comment._id)}
+                    className="text-red-500 hover:text-red-400 text-sm transition"
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
             </div>
-            <p className="text-gray-300">{comment.content}</p>
-            <div className="flex items-center mt-1">
-              <span className="text-sm text-gray-400 mr-2">
-                {comment.likesCount} Likes
-              </span>
-              <button
-                onClick={() => handleToggleCommentLike(comment._id)}
-                className="text-blue-500 hover:text-blue-400 text-sm transition mr-2"
-              >
-                {comment.isLiked ? "Unlike" : "Like"}
-              </button>
-              <button
-                onClick={() => handleDeleteComment(comment._id)}
-                className="text-red-500 hover:text-red-400 text-sm transition"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))
+          );
+        })
       ) : (
         <p className="text-gray-400">
           No comments yet. Be the first to comment!

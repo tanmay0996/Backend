@@ -30,10 +30,15 @@ const LoginPage = () => {
 
       // Update the auth context with the logged-in user's details.
       // Adjust the property based on your response structure.
-      setUser(response.data.data.user);
+      const loggedInUser = response.data.data.user;
+      setUser(loggedInUser);
       
-      // If needed, you can also store tokens here, but the context persistence will handle user details.
-      // e.g., localStorage.setItem("accessToken", response.data.data.accessToken);
+      // Persist user data in localStorage so that the user remains logged in after a page refresh.
+      localStorage.setItem("currentUser", JSON.stringify(loggedInUser));
+
+      // If your backend returns tokens and you need to store them, you can do so here.
+      // localStorage.setItem("accessToken", response.data.data.accessToken);
+      // localStorage.setItem("refreshToken", response.data.data.refreshToken);
 
       // Navigate to a protected route (update the route as needed)
       navigate('/'); 

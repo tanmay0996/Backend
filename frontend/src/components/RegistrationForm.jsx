@@ -66,7 +66,7 @@ const RegistrationForm = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/users/register",{   withCredentials: true},
+        "http://localhost:8000/api/v1/users/register",
         formDataToSend
       );
 

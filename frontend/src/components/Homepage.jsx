@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import VideoCard from "./VideoCard";
+import { Container, Grid, Typography, CircularProgress } from "@mui/material";
 
 const Homepage = () => {
   const [videos, setVideos] = useState([]);
@@ -21,7 +22,7 @@ const Homepage = () => {
 
         // Check if the response has a `docs` property (if you're using a paginate plugin)
         const videoData = response.data.data.docs || response.data.data;
-        console.log(videoData)
+        console.log(videoData);
         setVideos(videoData);
       } catch (error) {
         console.error("Error fetching videos:", error);
@@ -34,34 +35,43 @@ const Homepage = () => {
   }, []);
 
   if (loading) {
-    return <div className="p-4">Loading videos...</div>;
+    return (
+      <Container sx={{ padding: "16px", textAlign: "center" }}>
+        <CircularProgress />
+      </Container>
+    );
   }
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold">Trending Tours</h2>
-      <div className="grid grid-cols-2 gap-4 mt-4">
+    <Container sx={{ padding: "16px",bgcolor: "grey.900" }}>
+      <Typography variant="h4" gutterBottom>
+       Recommended
+      </Typography>
+      <Grid container spacing={2}>
         {videos.length > 0 ? (
           videos.map((video) => (
-            <VideoCard
-              key={video._id}
-              _id={video._id}
-              title={video.title}
-              // Display views (if not available, default to 0 Views)
-              views={`${video.views || 0} Views`}
-              // Format the createdAt date to a readable format
-              time={new Date(video.createdAt).toLocaleDateString()}
-              // Assuming your aggregation adds owner details into `ownerDetails`
-              user={video.ownerDetails?.username || "Unknown"}
-              // The thumbnail field is assumed to be a URL string stored in your video document
-              thumbnail={video.thumbnail}
-            />
+            <Grid item xs={12} sm={6} md={4} key={video._id}>
+              <VideoCard 
+                _id={video._id}
+                title={video.title}
+                // Display views (if not available, default to 0 Views)
+                views={`${video.views || 0} Views`}
+                // Format the createdAt date to a readable format
+                time={new Date(video.createdAt).toLocaleDateString()}
+                // Assuming your aggregation adds owner details into `ownerDetails`
+                user={video.ownerDetails?.username || "Unknown"}
+                // The thumbnail field is assumed to be a URL string stored in your video document
+                thumbnail={video.thumbnail}
+              />
+            </Grid>
           ))
         ) : (
-          <p>No videos available.</p>
+          <Grid item xs={12}>
+            <Typography variant="body1">No videos available.</Typography>
+          </Grid>
         )}
-      </div>
-    </div>
+      </Grid>
+    </Container>
   );
 };
 

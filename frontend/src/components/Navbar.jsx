@@ -3,10 +3,30 @@ import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
+import {
+  AppBar,
+  Toolbar,
+  TextField,
+  Box,
+  Button,
+  Typography,
+  Avatar,
+  IconButton,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleAvatarClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleLogout = async () => {
     try {
@@ -17,65 +37,80 @@ const Navbar = () => {
       );
       if (response.status === 200) {
         logout(); // Clear client state
-        setShowDropdown(false);
+        handleMenuClose();
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        // Treat 401 as "already logged out" on the server side
         logout(); // Clear client state
-        setShowDropdown(false);
+        handleMenuClose();
       } else {
         console.error("Error logging out:", error);
       }
     }
   };
-  
+
   return (
-    <div className="flex justify-between items-center p-4 bg-gray-800">
-      <input
-        type="text"
-        placeholder="Search"
-        className="bg-gray-700 text-white px-4 py-2 rounded w-1/2 outline-none"
-      />
-      <div>
-        {user ? (
-          <div className="flex items-center relative">
-            <span className="text-white mr-2">{user.fullName}</span>
-            <img
-              src={user.avatar}
-              alt="User Avatar"
-              className="w-10 h-10 rounded-full cursor-pointer"
-              onClick={() => setShowDropdown(!showDropdown)}
-            />
-            {showDropdown && (
-              <div className="absolute right-0 mt-2 w-32 bg-white rounded shadow-lg py-2 z-10">
-                <button
-                  onClick={handleLogout}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          <>
-            <Link
-              to="/login"
-              className="px-4 py-2 bg-gray-600 rounded mr-2 inline-block"
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="px-4 py-2 bg-blue-500 rounded inline-block"
-            >
-              Register
-            </Link>
-          </>
-        )}
-      </div>
-    </div>
+    <AppBar position="static" sx={{ bgcolor: "grey.900" }}>
+      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+        <TextField
+          placeholder="Search"
+          variant="outlined"
+          size="small"
+          sx={{
+            bgcolor: "grey.800",
+            borderRadius: 1,
+            width: "50%",
+            "& .MuiOutlinedInput-input": { color: "white" },
+            "& .MuiInputLabel-root": { color: "white" },
+            "& .MuiOutlinedInput-notchedOutline": { borderColor: "grey.700" },
+          }}
+          InputProps={{
+            sx: { color: "white" },
+          }}
+        />
+        <Box>
+          {user ? (
+            <Box display="flex" alignItems="center">
+              <Typography variant="body1" sx={{ mr: 2, color: "white" }}>
+                {user.fullName}
+              </Typography>
+              <IconButton onClick={handleAvatarClick}>
+                <Avatar src={user.avatar} alt="User Avatar" />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </Box>
+          ) : (
+            <Box>
+              <Button
+                component={Link}
+                to="/login"
+                variant="contained"
+                sx={{ mr: 2, bgcolor: "grey.600" }}
+              >
+                Login
+              </Button>
+              <Button component={Link} to="/register" variant="contained" color="primary">
+                Register
+              </Button>
+            </Box>
+          )}
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 

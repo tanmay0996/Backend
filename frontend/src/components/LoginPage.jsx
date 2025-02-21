@@ -1,7 +1,9 @@
+// src/components/LoginPage.js
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext'; // Adjust the path as needed
+import { AuthContext } from '../context/AuthContext';
+import { Container, Paper, Typography, TextField, Button, Box, Alert } from '@mui/material';
 
 const LoginPage = () => {
   const [username, setUsername] = useState(''); // or email, depending on your backend logic
@@ -25,64 +27,58 @@ const LoginPage = () => {
         }
       );
 
-      // Log the response to see what data is returned
       console.log('Login successful:', response.data);
-
+      
       // Update the auth context with the logged-in user's details.
-      // Adjust the property based on your response structure.
       const loggedInUser = response.data.data.user;
       setUser(loggedInUser);
       
       // Persist user data in localStorage so that the user remains logged in after a page refresh.
       localStorage.setItem("currentUser", JSON.stringify(loggedInUser));
-
-      // If your backend returns tokens and you need to store them, you can do so here.
-      // localStorage.setItem("accessToken", response.data.data.accessToken);
-      // localStorage.setItem("refreshToken", response.data.data.refreshToken);
-
+      
       // Navigate to a protected route (update the route as needed)
       navigate('/'); 
       
     } catch (err) {
       console.error('Login error:', err);
-      // Handle errors – adjust based on your backend error structure
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: 'auto' }}>
-      <h1>Login</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="username">Username or Email:</label>
-          <input
-            type="text"
-            id="username"
+    <Container maxWidth="sm">
+      <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Login
+        </Typography>
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        
+        <Box component="form" onSubmit={handleSubmit} noValidate>
+          <TextField
+            label="Username or Email"
+            variant="outlined"
+            fullWidth
+            margin="normal"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
-            style={{ width: '100%', padding: '8px' }}
           />
-        </div>
-        
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="password">Password:</label>
-          <input
+          <TextField
+            label="Password"
             type="password"
-            id="password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{ width: '100%', padding: '8px' }}
           />
-        </div>
-        
-        <button type="submit" style={{ padding: '10px 20px' }}>Login</button>
-      </form>
-    </div>
+          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+            Login
+          </Button>
+        </Box>
+      </Paper>
+    </Container>
   );
 };
 

@@ -30,9 +30,15 @@ const Sidebar = () => {
             <FaClock /> Liked Videos
           </Link>
         </li>
-        <li className="p-2 flex items-center gap-2 hover:bg-gray-700 rounded">
-          <FaVideo /> History
-        </li>
+        <li>
+  <Link
+    to="/history"
+    className="p-2 flex items-center gap-2 hover:bg-gray-700 rounded"
+  >
+    <FaVideo /> History
+  </Link>
+</li>
+
         <li className="p-2 flex items-center gap-2 hover:bg-gray-700 rounded">
           <FaFolder /> My Content
         </li>

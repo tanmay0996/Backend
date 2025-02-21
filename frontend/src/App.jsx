@@ -8,6 +8,7 @@ import Layout from './components/Layout';
 import LikedVideos from './components/LikedVideos.jsx'
 // import VideoPlayer from './components/VideoPlayer.jsx'
 import VideoPlayer from './components/VideoPlayer.jsx';
+import WatchHistory from './components/WatchHistory.jsx';
 
 import './App.css';
 import { AuthProvider } from './context/AuthContext.jsx';
@@ -25,6 +26,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/video-upload" element={<VideoUpload />} />
           <Route path="/liked-videos" element={<LikedVideos />} />
+          <Route path="/history" element={<WatchHistory />} />
         </Route>
         <Route path="video/v/:videoId" element={<VideoPlayer />} />
       </Routes>

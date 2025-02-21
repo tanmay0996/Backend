@@ -50,7 +50,7 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ bgcolor: "grey.900" }}>
+    <AppBar position="static" sx={{ bgcolor: "black" }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <TextField
           placeholder="Search"

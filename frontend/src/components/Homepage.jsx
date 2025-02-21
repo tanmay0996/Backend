@@ -43,7 +43,7 @@ const Homepage = () => {
   }
 
   return (
-    <Container sx={{ padding: "16px",bgcolor: "grey.900" }}>
+    <Container sx={{ padding: "16px",bgcolor: "black" }}>
       <Typography variant="h4" gutterBottom>
        Recommended
       </Typography>

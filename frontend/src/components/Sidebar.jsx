@@ -11,7 +11,7 @@ const Sidebar = () => {
       sx={{
         width: 240,
         height: "100vh",
-        bgcolor: "grey.900",
+        bgcolor: "black",
         color: "white",
         p: 2,
       }}

@@ -1,16 +1,20 @@
 // src/components/VideoPlayer.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import Comments from "./Comments"; // Import the Comments component
+import Comments from "../components/Comments"; // Import the Comments component
+import { AuthContext } from "../context/AuthContext";
 
 const VideoPlayer = () => {
   const { videoId } = useParams();
+  const { user } = useContext(AuthContext);
+  
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [likeCount, setLikeCount] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -21,10 +25,10 @@ const VideoPlayer = () => {
         );
         const videoData = response.data.data;
         setVideo(videoData);
-
-        // Initialize like count and status from API response.
         setLikeCount(videoData.likeCount || 0);
         setIsLiked(videoData.isLiked || false);
+        // Optionally, if your video API returns subscription status, initialize it here:
+        // setIsSubscribed(videoData.isSubscribed || false);
       } catch (err) {
         console.error("Error fetching video:", err);
         setError("Failed to load video details.");
@@ -36,24 +40,57 @@ const VideoPlayer = () => {
     fetchVideo();
   }, [videoId]);
 
+  // New useEffect to check subscription status after video data is loaded
+  useEffect(() => {
+    if (user && video && video.owner) {
+      // Call your endpoint to get all channels the user is subscribed to
+      axios
+        .get(`http://localhost:8000/api/v1/subscriptions/u/${user._id}`, {
+          withCredentials: true,
+        })
+        .then((response) => {
+          const subscribedChannels = response.data.data;
+          // Check if the current video's channel is in the user's subscribed channels
+          const subscribed = subscribedChannels.some(
+            (item) => item.subscribedChannel._id === video.owner._id
+          );
+          setIsSubscribed(subscribed);
+        })
+        .catch((err) => {
+          console.error("Error checking subscription status:", err);
+        });
+    }
+  }, [user, video]);
+
   const handleLike = async () => {
     try {
-      // Call the toggle like API endpoint.
       const response = await axios.post(
         `http://localhost:8000/api/v1/likes/toggle/v/${videoId}`,
         {},
         { withCredentials: true }
       );
-      // The API is expected to return { data: { isLiked: true/false } }.
       const { isLiked: updatedLikeStatus } = response.data.data;
-
-      // Update the like count based on whether the video is now liked or unliked.
       setLikeCount((prevCount) =>
         updatedLikeStatus ? prevCount + 1 : prevCount - 1
       );
       setIsLiked(updatedLikeStatus);
     } catch (err) {
       console.error("Error toggling like:", err);
+    }
+  };
+
+  const handleSubscribe = async () => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/api/v1/subscriptions/c/${video.owner._id}`,
+        {},
+        { withCredentials: true }
+      );
+      console.log("Toggled subscription for channel:", video.owner._id);
+      console.log("Current subscription status:", response.data.data.subscribed);
+      setIsSubscribed(response.data.data.subscribed);
+    } catch (err) {
+      console.error("Error toggling subscription:", err);
     }
   };
 
@@ -96,7 +133,6 @@ const VideoPlayer = () => {
               onClick={handleLike}
               className="flex items-center space-x-1 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded"
             >
-              {/* Optionally, update icon appearance based on like state */}
               <span>{isLiked ? "👍" : "👍"}</span>
               <span>
                 Like {likeCount > 0 && <span className="ml-1">{likeCount}</span>}
@@ -106,8 +142,13 @@ const VideoPlayer = () => {
               <span>↗</span>
               <span>Share</span>
             </button>
-            <button className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full">
-              Subscribe
+            <button
+              onClick={handleSubscribe}
+              className={`px-4 py-2 rounded-full ${
+                isSubscribed ? "bg-gray-600 hover:bg-gray-500" : "bg-red-600 hover:bg-red-700"
+              }`}
+            >
+              {isSubscribed ? "Subscribed" : "Subscribe"}
             </button>
           </div>
         </div>

@@ -139,6 +139,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true, //Bydefault cookies can be modified by frontend
     secure: true, //Enabling these opts: only server can modify cookies
+    sameSite: "None" 
   };
 
   return res // req/res ke pass bhi cookie ka access hai via cookieParser(middleware)
@@ -179,6 +180,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: true,
+    sameSite: "None" 
   };
   return res
     .status(200)
@@ -214,6 +216,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const options = {
       httpOnly: true,
       secure: true,
+      sameSite: "None" 
     };
 
     return res

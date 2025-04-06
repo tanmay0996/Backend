@@ -36,7 +36,7 @@ const VideoUpload = () => {
     try {
       setUploading(true);
       setMessage("");
-      const response = await axios.post("http://localhost:8000/api/v1/video", formData, {
+      const response = await axios.post(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/video`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });

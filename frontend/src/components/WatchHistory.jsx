@@ -11,7 +11,7 @@ const WatchHistory = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/v1/users/history", {
+      .get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/users/history`, {
         withCredentials: true,
       })
       .then((response) => {

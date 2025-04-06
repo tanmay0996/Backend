@@ -21,7 +21,7 @@ const Sidebar = () => {
   const fetchSubscribedChannels = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/subscriptions/u/${subscriberId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/subscriptions/u/${subscriberId}`,
         { withCredentials: true }
       );
       setSubscribedChannels(response.data.data);

@@ -13,7 +13,7 @@ const Homepage = () => {
     const fetchVideos = async () => {
       try {
         // Calling your getAllVideos endpoint
-        const response = await axios.get("http://localhost:8000/api/v1/video", {
+        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/video`, {
           params: {
             page: 1,
             limit: 10,

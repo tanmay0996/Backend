@@ -66,7 +66,7 @@ const RegistrationForm = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/users/register",
+        `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/users/register`,
         formDataToSend
       );
 
@@ -182,7 +182,7 @@ const RegistrationForm = () => {
         
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Cover Image (Optional)
+            Cover Image (Required)
           </label>
           <input
             type="file"

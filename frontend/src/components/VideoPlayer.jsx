@@ -20,7 +20,7 @@ const VideoPlayer = () => {
     const fetchVideo = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/v1/video/v/${videoId}`,
+          `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/video/v/${videoId}`,
           { withCredentials: true }
         );
         const videoData = response.data.data;
@@ -45,7 +45,7 @@ const VideoPlayer = () => {
     if (user && video && video.owner) {
       // Call your endpoint to get all channels the user is subscribed to
       axios
-        .get(`http://localhost:8000/api/v1/subscriptions/u/${user._id}`, {
+        .get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/subscriptions/u/${user._id}`, {
           withCredentials: true,
         })
         .then((response) => {
@@ -65,7 +65,7 @@ const VideoPlayer = () => {
   const handleLike = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/v1/likes/toggle/v/${videoId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/likes/toggle/v/${videoId}`,
         {},
         { withCredentials: true }
       );
@@ -82,7 +82,7 @@ const VideoPlayer = () => {
   const handleSubscribe = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/v1/subscriptions/c/${video.owner._id}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/subscriptions/c/${video.owner._id}`,
         {},
         { withCredentials: true }
       );

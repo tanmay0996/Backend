@@ -11,9 +11,11 @@ const LikedVideos = () => {
   useEffect(() => {
     const fetchLikedVideos = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/v1/likes/videos", {
+        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/likes/videos`, {
           withCredentials: true,
+          
         });
+        console.log(import.meta.env.VITE_REACT_APP_BACKEND_URL)
         console.log("API response:", response.data);
         
         // The aggregation returns an array of objects with { likedVideo: { ... } }

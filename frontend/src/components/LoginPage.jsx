@@ -20,7 +20,7 @@ const LoginPage = () => {
     try {
       // Make a POST request to your backend login endpoint.
       const response = await axios.post(
-        'http://localhost:8000/api/v1/users/login',
+        `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/users/login`,
         { username, password },
         {
           withCredentials: true, // ensures cookies (like tokens) are sent and received

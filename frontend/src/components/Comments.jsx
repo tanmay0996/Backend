@@ -17,7 +17,7 @@ const Comments = ({ videoId }) => {
     setError("");
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/comment/video/${videoId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/comment/video/${videoId}`,
         { withCredentials: true }
       );
       console.log("Fetched comments:", response.data.data.docs);
@@ -40,7 +40,7 @@ const Comments = ({ videoId }) => {
 
     try {
       await axios.post(
-        `http://localhost:8000/api/v1/comment/video/${videoId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/comment/video/${videoId}`,
         { content: commentText },
         { withCredentials: true }
       );
@@ -55,7 +55,7 @@ const Comments = ({ videoId }) => {
   const handleDeleteComment = async (commentId) => {
     try {
       await axios.delete(
-        `http://localhost:8000/api/v1/comment/${commentId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/comment/${commentId}`,
         { withCredentials: true }
       );
       fetchComments();
@@ -68,7 +68,7 @@ const Comments = ({ videoId }) => {
   const handleToggleCommentLike = async (commentId) => {
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/v1/likes/toggle/c/${commentId}`,
+        `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/likes/toggle/c/${commentId}`,
         {},
         { withCredentials: true }
       );

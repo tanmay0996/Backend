@@ -1,37 +1,56 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext"; // adjust the path as needed
+import { AuthContext } from "../context/AuthContext";
+import {
+  Box,
+  Container,
+  Typography,
+  TextField,
+  Button,
+  CssBaseline,
+  createTheme,
+  ThemeProvider
+} from "@mui/material";
+
+// Tailwind‑inspired dark theme (gray‑900, gray‑800, text-white/gray-400)
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    background: {
+      default: "#111827", // bg-gray-900
+      paper: "#1f2937"    // bg-gray-800
+    },
+    text: {
+      primary: "#ffffff", // text-white
+      secondary: "#9ca3af"// text-gray-400
+    }
+  }
+});
 
 const RegistrationForm = () => {
   const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
-    fullName: "", // Field for fullName
-    avatar: null, // Store avatar file
-    coverImage: null, // Store cover image file (optional)
+    fullName: "",
+    avatar: null,
+    coverImage: null
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     if (files.length > 0) {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: files[0], // Store the file object
-      }));
+      setFormData((prev) => ({ ...prev, [name]: files[0] }));
     }
   };
 
@@ -52,14 +71,13 @@ const RegistrationForm = () => {
     formDataToSend.append("username", formData.username);
     formDataToSend.append("email", formData.email);
     formDataToSend.append("password", formData.password);
-    formDataToSend.append("fullName", formData.fullName); // Added fullName to the formData
+    formDataToSend.append("fullName", formData.fullName);
     formDataToSend.append("avatar", formData.avatar);
-    
     if (formData.coverImage instanceof File) {
       formDataToSend.append("coverImage", formData.coverImage);
     }
 
-    // Debug: Log FormData entries (optional)
+    // Debug: log entries
     for (let pair of formDataToSend.entries()) {
       console.log(pair[0], pair[1]);
     }
@@ -67,14 +85,11 @@ const RegistrationForm = () => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/users/register`,
-        formDataToSend
+        formDataToSend,
+        { withCredentials: true }
       );
-
       if (response.status === 201) {
-        console.log("Registration successful:", response.data);
-        // Update auth context with the registered user's details
         setUser(response.data.data);
-        // Redirect to homepage or dashboard after registration
         navigate("/");
       } else {
         console.log("Registration failed:", response.data);
@@ -90,117 +105,143 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md"
-        encType="multipart/form-data"
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <Box
+        sx={{
+          bgcolor: "background.default",
+          minHeight: "100vh",
+          py: 8,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
       >
-        <h2 className="text-2xl font-bold text-center mb-4">Register</h2>
-        
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Full Name
-          </label>
-          <input
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            required
-            className="w-full mt-1 p-2 border border-gray-300 rounded-md text-black"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Username
-          </label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-            className="w-full mt-1 p-2 border border-gray-300 rounded-md text-black"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="w-full mt-1 p-2 border border-gray-300 rounded-md text-black"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Password
-          </label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="w-full mt-1 p-2 border border-gray-300 rounded-md text-black"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
-            className="w-full mt-1 p-2 border border-gray-300 rounded-md text-black"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Avatar (Required)
-          </label>
-          <input
-            type="file"
-            name="avatar"
-            accept="image/*"
-            onChange={handleFileChange}
-            required
-            className="w-full mt-1 p-2 border border-gray-300 rounded-md text-black"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Cover Image (Required)
-          </label>
-          <input
-            type="file"
-            name="coverImage"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="w-full mt-1 p-2 border border-gray-300 rounded-md text-black"
-          />
-        </div>
-        
-        <button
-          type="submit"
-          className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600"
-        >
-          Register
-        </button>
-      </form>
-    </div>
+        <Container maxWidth="sm">
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            encType="multipart/form-data"
+            sx={{
+              bgcolor: "background.paper",
+              p: 4,
+              borderRadius: 2,
+              boxShadow: 3,
+              display: "flex",
+              flexDirection: "column",
+              gap: 2
+            }}
+          >
+            <Typography variant="h4" align="center" sx={{ fontWeight: 600 }}>
+              Register
+            </Typography>
+
+            <TextField
+              label="Full Name"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              required
+              fullWidth
+              InputProps={{ sx: { bgcolor: "background.default", color: "text.primary" } }}
+            />
+            <TextField
+              label="Username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              fullWidth
+              InputProps={{ sx: { bgcolor: "background.default", color: "text.primary" } }}
+            />
+            <TextField
+              label="Email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              fullWidth
+              InputProps={{ sx: { bgcolor: "background.default", color: "text.primary" } }}
+            />
+            <TextField
+              label="Password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              fullWidth
+              InputProps={{ sx: { bgcolor: "background.default", color: "text.primary" } }}
+            />
+            <TextField
+              label="Confirm Password"
+              name="confirmPassword"
+              type="password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+              fullWidth
+              InputProps={{ sx: { bgcolor: "background.default", color: "text.primary" } }}
+            />
+
+            {/* Avatar Upload */}
+            <Box>
+              <Button
+                variant="contained"
+                component="label"
+                sx={{ bgcolor: "purple.600", '&:hover': { bgcolor: "purple.700" } }}
+              >
+                Select Avatar *
+                <input
+                  type="file"
+                  name="avatar"
+                  accept="image/*"
+                  hidden
+                  onChange={handleFileChange}
+                />
+              </Button>
+              {formData.avatar && (
+                <Typography sx={{ color: 'success.main', mt: 1 }}>
+                  {formData.avatar.name}
+                </Typography>
+              )}
+            </Box>
+
+            {/* Cover Image Upload */}
+            <Box>
+              <Button
+                variant="contained"
+                component="label"
+                sx={{ bgcolor: "purple.600", '&:hover': { bgcolor: "purple.700" } }}
+              >
+                Select Cover Image
+                <input
+                  type="file"
+                  name="coverImage"
+                  accept="image/*"
+                  hidden
+                  onChange={handleFileChange}
+                />
+              </Button>
+              {formData.coverImage && (
+                <Typography sx={{ color: 'success.main', mt: 1 }}>
+                  {formData.coverImage.name}
+                </Typography>
+              )}
+            </Box>
+
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ bgcolor: "purple.600", '&:hover': { bgcolor: "purple.700" }, mt: 2 }}
+            >
+              Register
+            </Button>
+          </Box>
+        </Container>
+      </Box>
+    </ThemeProvider>
   );
 };
 

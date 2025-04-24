@@ -1,12 +1,29 @@
-import express from "express"
-import cors from "cors"
-import cookieParser from "cookie-parser"
-const app=express()
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+const app = express();
 
+// Define allowed origins
+const allowedOrigins = [
+  "http://localhost:5173",  // Local development origin
+  process.env.CORS_ORIGIN  // Production frontend origin
+];
+
+// CORS configuration
 app.use(cors({
-    origin:process.env.CORS_ORIGIN,
-    credentials:true
-}))
+  origin: function (origin, callback) {
+    // Allow requests with no origin (e.g., from Postman or server-side)
+    if (!origin) return callback(null, true);
+    
+    // Check if the origin is in the allowed origins list
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true  // Allow credentials (cookies, authorization headers, etc.)
+}));
 
 app.use(express.json({limit:"16kb"}))             //json data ko allow karenge(form bharenge toh data aaega)
 app.use(express.urlencoded({extended:true,limit:"16kb"}))           //URL se data le rahe
@@ -35,13 +52,9 @@ import subscriptionRouter from "./routes/subscription.routes.js";
 app.use("/api/v1/users",userRouter)         // /users pe userRouter(middleware) ko activate karenge
 //http://localhost:8000/api/v1/users/register
 app.use("/api/v1/tweet", tweetRouter);
-
 app.use("/api/v1/video", videoRouter);
-
 app.use("/api/v1/comment", commentRouter);
-
 app.use("/api/v1/likes", likeRouter);
-
 app.use("/api/v1/subscriptions", subscriptionRouter);
 
-export {app}
+export { app };

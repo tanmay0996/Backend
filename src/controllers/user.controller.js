@@ -92,10 +92,29 @@ const registerUser = asyncHandler(async (req, res) => {
   if (!createdUser) {
     throw new ApiError(500, "Something went wrong while registering the user");
   }
+  const { refreshToken, accessToken } = await generateAccessandRefrshToken(
+    user._id
+  );
+  //Cookies bhejna
+  const options = {
+    httpOnly: true, //Bydefault cookies can be modified by frontend
+    secure: true, //Enabling these opts: only server can modify cookies
+    sameSite: "None" ,
+    maxAge:   7 * 24 * 60 * 60 * 1000, // without this --> session cookie
+  };
 
-  return res.status(201).json(
+  return res
+  .status(201)
+  .cookie("accessToken", accessToken, options)
+  .cookie("refreshToken", refreshToken, options)
+  .json(
     //this res is only for PostMan.agar yeh nahi likhoge toh bhi data entry store hogi DB pe
-    new ApiResponse(200, createdUser, "user registered successfully")
+    new ApiResponse(
+      200, 
+      createdUser,
+      accessToken,
+      refreshToken, //be selective :)
+       "user registered successfully")
   );
 });
 

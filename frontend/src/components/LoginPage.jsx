@@ -15,6 +15,7 @@ import {
   Link
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import LottieLoader from '../animations/LottieLoader';
 
 // Tailwind‑inspired dark theme (gray‑900, gray‑800, text-white/gray-400)
 const darkTheme = createTheme({
@@ -35,6 +36,7 @@ const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -42,6 +44,7 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     try {
       const response = await axios.post(
@@ -55,6 +58,8 @@ const LoginPage = () => {
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,10 +127,10 @@ const LoginPage = () => {
                 type="submit"
                 variant="contained"
                 fullWidth
-                disabled={false}
+                disabled={loading}
                 sx={{ bgcolor: 'purple.600', '&:hover': { bgcolor: 'purple.700' } }}
               >
-                Login
+                {loading ? 'Logging In…' : 'Login'}
               </Button>
             </Box>
 
@@ -141,6 +146,7 @@ const LoginPage = () => {
           </Box>
         </Container>
       </Box>
+      <LottieLoader open={loading} />
     </ThemeProvider>
   );
 };

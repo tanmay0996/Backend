@@ -12,6 +12,7 @@ import {
   createTheme,
   ThemeProvider
 } from "@mui/material";
+import LottieLoader from "../animations/LottieLoader";
 
 // Tailwind‑inspired dark theme (gray‑900, gray‑800, text-white/gray-400)
 const darkTheme = createTheme({
@@ -31,6 +32,9 @@ const darkTheme = createTheme({
 const RegistrationForm = () => {
   const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  // loading state for Lottie loader
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -82,6 +86,7 @@ const RegistrationForm = () => {
       console.log(pair[0], pair[1]);
     }
 
+    setLoading(true);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/users/register`,
@@ -89,7 +94,7 @@ const RegistrationForm = () => {
         { withCredentials: true }
       );
       if (response.status === 201) {
-        setUser(response.data.data);
+        setUser(response.data.data.user || response.data.data);
         navigate("/");
       } else {
         console.log("Registration failed:", response.data);
@@ -101,6 +106,8 @@ const RegistrationForm = () => {
         error.response ? error.response.data : error.message
       );
       alert("An error occurred during registration.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -241,6 +248,7 @@ const RegistrationForm = () => {
           </Box>
         </Container>
       </Box>
+      <LottieLoader open={loading} />
     </ThemeProvider>
   );
 };

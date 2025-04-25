@@ -17,7 +17,7 @@ const VideoCard = ({
   time,
   user,
   thumbnail,
-  avatar // added prop for user avatar
+  avatar
 }) => {
   // Build metadata array only with non-empty values
   const metadataItems = [];
@@ -26,11 +26,11 @@ const VideoCard = ({
   const metadata = metadataItems.join(" • ");
 
   return (
-    <Card sx={{ width: '100%', margin: "0" }}>
+    <Card sx={{ width: '100%' }}>
       <CardActionArea component={Link} to={`/video/v/${_id}`}>
         <CardMedia
           component="img"
-          image={thumbnail || '/placeholder-image.jpg'}
+          image={thumbnail}
           alt={title}
           sx={{ 
             height: 180,
@@ -46,14 +46,14 @@ const VideoCard = ({
               src={avatar}
               alt={user}
               variant="circular" 
-              sx={{ width: 40, height: 40, mt: 0.5 }} // slightly move avatar up and set size
+              sx={{ width: 40, height: 40, mt: 0.5 }}
             />
             {/* Details on the right: title, user name, metadata */}
             <Box sx={{ flex: 1 }}>
               <Typography
                 variant="subtitle1"
                 component="div"
-                sx={{ fontWeight: 600, mb: 0.01 }} // bold title and small bottom margin
+                sx={{ fontWeight: 600, mb: 0.01 }}
               >
                 {title}
               </Typography>
@@ -61,9 +61,18 @@ const VideoCard = ({
               <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.2}}>
                 {user}
               </Typography>
-              {/* Render metadata (views and time) below */}
+              {/* Added explicit styling to prevent line breaking */}
               {metadata && (
-                <Typography variant="body2" color="text.secondary">
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary"
+                  sx={{ 
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: 'block' // Force block display
+                  }}
+                >
                   {metadata}
                 </Typography>
               )}

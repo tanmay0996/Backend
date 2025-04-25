@@ -95,13 +95,12 @@ const WatchHistory = () => {
             {videos.length > 0 ? (
               <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}>
                 {videos.map((video) => (
-                  <Grid item xs={12} sm={6} md={4} key={video._id}>
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={video._id}>
                     <Box
                       sx={{
                         bgcolor: "background.paper",
                         borderRadius: 2,
                         overflow: "hidden",
-                        boxShadow: 0, // start with no shadow
                         transition: "transform 0.3s, box-shadow 0.3s",
                         "&:hover": {
                           transform: "translateY(-4px)",
@@ -114,9 +113,9 @@ const WatchHistory = () => {
                         title={video.title}
                         user={video.owner?.username || "Unknown"}
                         thumbnail={video.thumbnail}
-                        views={`${video.views || 0} Views`} // corrected spacing and prop name
+                        views={`${video.views || 0} Views`}
                         time={new Date(video.createdAt).toLocaleDateString()}
-                        avatar={video.owner?.avatar} // pass actual avatar URL
+                        avatar={video.owner?.avatar}
                       />
                     </Box>
                   </Grid>

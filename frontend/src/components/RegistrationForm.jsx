@@ -222,7 +222,7 @@ const RegistrationForm = () => {
                 component="label"
                 sx={{ bgcolor: "purple.600", '&:hover': { bgcolor: "purple.700" } }}
               >
-                Select Cover Image
+                Select Cover Image*
                 <input
                   type="file"
                   name="coverImage"

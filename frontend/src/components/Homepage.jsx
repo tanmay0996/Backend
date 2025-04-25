@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import VideoCard from "./VideoCard";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   Container,
@@ -9,8 +10,10 @@ import {
   CircularProgress,
   createTheme,
   ThemeProvider,
-  CssBaseline
+  CssBaseline,
+  Chip
 } from "@mui/material";
+import { FaTimes } from "react-icons/fa";
 
 // Tailwind‑inspired dark theme (gray‑900, gray‑800, text-white/gray-400)
 const darkTheme = createTheme({
@@ -30,11 +33,29 @@ const darkTheme = createTheme({
 const Homepage = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Parse query parameters
+  const queryParams = new URLSearchParams(location.search);
+  const searchQuery = queryParams.get('query');
 
   useEffect(() => {
     const fetchVideos = async () => {
       try {
         console.log("Environment variables:", import.meta.env);
+        
+        // Prepare request parameters
+        const params = { 
+          page: 1, 
+          limit: 10
+        };
+        
+        // Add search query if present
+        if (searchQuery) {
+          params.query = searchQuery;
+        }
+        
         console.log(
           "Making API request to:",
           `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/video`
@@ -42,7 +63,7 @@ const Homepage = () => {
 
         const response = await axios.get(
           `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/video`,
-          { params: { page: 1, limit: 10 }, withCredentials: true }
+          { params, withCredentials: true }
         );
 
         console.log("Full response:", response);
@@ -68,7 +89,11 @@ const Homepage = () => {
     };
 
     fetchVideos();
-  }, []);
+  }, [searchQuery]); // Re-fetch when search query changes
+
+  const clearSearch = () => {
+    navigate('/');
+  };
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -95,17 +120,36 @@ const Homepage = () => {
           }}
         >
           <Container maxWidth="lg">
-            <Typography
-              variant="h4"
-              gutterBottom
-              sx={{
-                color: "text.primary",
-                fontWeight: 700,
-                mb: { xs: 2, sm: 4 }
-              }}
-            >
-              Recommended
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: { xs: 2, sm: 4 } }}>
+              <Typography
+                variant="h4"
+                sx={{
+                  color: "text.primary",
+                  fontWeight: 700,
+                  flexGrow: 1
+                }}
+              >
+                {searchQuery ? 'Search Results' : 'Recommended'}
+              </Typography>
+              
+              {searchQuery && (
+                <Chip
+                  label={`"${searchQuery}"`}
+                  onDelete={clearSearch}
+                  deleteIcon={<FaTimes />}
+                  sx={{ 
+                    bgcolor: 'rgba(255,255,255,0.1)', 
+                    color: 'text.primary',
+                    '& .MuiChip-deleteIcon': {
+                      color: 'text.secondary',
+                      '&:hover': {
+                        color: 'text.primary'
+                      }
+                    }
+                  }}
+                />
+              )}
+            </Box>
 
             {videos.length > 0 ? (
               <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}>
@@ -131,6 +175,7 @@ const Homepage = () => {
                         user={video.ownerDetails?.username || "Unknown"}
                         thumbnail={video.thumbnail}
                         avatar={video.ownerDetails?.avatar}
+                        // description={video.description}
                       />
                     </Box>
                   </Grid>
@@ -142,7 +187,10 @@ const Homepage = () => {
                   variant="h6"
                   sx={{ color: "text.secondary" }}
                 >
-                  No videos available.
+                  {searchQuery 
+                    ? `No videos found matching "${searchQuery}"`
+                    : "No videos available."
+                  }
                 </Typography>
               </Box>
             )}

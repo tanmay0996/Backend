@@ -17,7 +17,8 @@ const VideoCard = ({
   time,
   user,
   thumbnail,
-  avatar
+  avatar,
+  description
 }) => {
   // Build metadata array only with non-empty values
   const metadataItems = [];
@@ -27,10 +28,10 @@ const VideoCard = ({
 
   return (
     <Card sx={{ width: '100%' }}>
-      <CardActionArea component={Link} to={`/video/v/${_id}`}>
+      <CardActionArea component={Link} to={`/video/v/${_id}`}>  
         <CardMedia
           component="img"
-          image={thumbnail}
+          image={thumbnail?.url || thumbnail}
           alt={title}
           sx={{ 
             height: 180,
@@ -39,41 +40,51 @@ const VideoCard = ({
           }}
         />
         <CardContent>
-          {/* Container for avatar and text details */}
-          <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
-            {/* Avatar on the left */}
+          {/* Row: Avatar and details */}
+          <Box sx={{ display: "flex", gap: 2 }}>
             <Avatar
               src={avatar}
               alt={user}
               variant="circular" 
               sx={{ width: 40, height: 40, mt: 0.5 }}
             />
-            {/* Details on the right: title, user name, metadata */}
             <Box sx={{ flex: 1 }}>
               <Typography
                 variant="subtitle1"
                 component="div"
-                sx={{ fontWeight: 600, mb: 0.01 }}
+                sx={{ fontWeight: 600, mb: 0.5, lineHeight: 1.2 }}
+                noWrap
               >
                 {title}
               </Typography>
-              {/* Channel/user name line */}
-              <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.2}}>
+
+              <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }} noWrap>
                 {user}
               </Typography>
-              {/* Added explicit styling to prevent line breaking */}
+
               {metadata && (
                 <Typography 
                   variant="body2" 
                   color="text.secondary"
-                  sx={{ 
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    display: 'block' // Force block display
-                  }}
+                  sx={{ mb: description ? 1 : 0 }}
+                  noWrap
                 >
                   {metadata}
+                </Typography>
+              )}
+
+              {description && (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden'
+                  }}
+                >
+                  {description}
                 </Typography>
               )}
             </Box>

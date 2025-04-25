@@ -1,4 +1,3 @@
-// src/components/Navbar.js
 import React, { useContext, useState } from "react";
 import {
   AppBar,
@@ -17,10 +16,11 @@ import {
   Divider,
   Menu,
   MenuItem,
-  useMediaQuery
+  useMediaQuery,
+  InputAdornment
 } from "@mui/material";
-import { Link } from "react-router-dom";
-import { FaHome, FaClock, FaVideo, FaFolder, FaUsers } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaHome, FaClock, FaVideo, FaFolder, FaUsers, FaSearch } from "react-icons/fa";
 import { PiUploadFill } from "react-icons/pi";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
@@ -30,6 +30,9 @@ const Navbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState(null);
   const isMobile = useMediaQuery("(max-width:600px)");
+  // Add state for search functionality
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   const toggleDrawer = (open) => () => setDrawerOpen(open);
 
@@ -62,6 +65,17 @@ const Navbar = () => {
     }
   };
 
+  // Search handlers
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSearchSubmit = (e) => {
+    if (e.key === 'Enter') {
+      // Navigate to homepage with search query
+      navigate(`/?query=${encodeURIComponent(searchTerm)}`);
+    }
+  };
 
   const colors = {
     appBar: "#111827",        // bg-gray-900
@@ -86,6 +100,9 @@ const Navbar = () => {
               variant="outlined"
               size="small"
               fullWidth
+              value={searchTerm}
+              onChange={handleSearchChange}
+              onKeyPress={handleSearchSubmit}
               sx={{
                 bgcolor: colors.searchBg,
                 borderRadius: 1,
@@ -96,7 +113,19 @@ const Navbar = () => {
                 }
               }}
               InputProps={{
-                sx: { color: colors.textPrimary }
+                sx: { color: colors.textPrimary },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton 
+                   
+                      edge="end" 
+                      sx={{ color: colors.textSecondary }}
+                      onClick={() => navigate(`/?query=${encodeURIComponent(searchTerm)}`)}
+                    >
+                      <FaSearch size={16}/>
+                    </IconButton>
+                  </InputAdornment>
+                )
               }}
             />
           </Box>
@@ -122,7 +151,7 @@ const Navbar = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Desktop “Logout” menu */}
+      {/* Desktop "Logout" menu */}
       <Menu
         anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}

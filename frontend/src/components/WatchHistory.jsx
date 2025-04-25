@@ -110,12 +110,7 @@ const WatchHistory = () => {
                           transform: "translateY(-5px)",
                           boxShadow: 4
                         },
-                        "& .MuiCardMedia-root, & img": {
-                          width: "100%",
-                          height: "auto",
-                          aspectRatio: "16/9",
-                          objectFit: "cover"
-                        },
+                        // Only allow CardContent to grow; remove global img override
                         "& .MuiCardContent-root": {
                           flexGrow: 1
                         }
@@ -124,8 +119,11 @@ const WatchHistory = () => {
                       <VideoCard
                         _id={video._id}
                         title={video.title}
-                        user={video.user}
+                        user={video.owner?.username || "Unknown"}
                         thumbnail={video.thumbnail}
+                        views={`${video.views || 0} Views`} // corrected spacing and prop name
+                        time={new Date(video.createdAt).toLocaleDateString()}
+                        avatar={video.owner?.avatar} // pass actual avatar URL
                       />
                     </Box>
                   </Grid>

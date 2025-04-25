@@ -1,8 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Card, CardActionArea, CardMedia, CardContent, Typography } from "@mui/material";
+import {
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  Typography,
+  Avatar,
+  Box
+} from "@mui/material";
 
-const VideoCard = ({ _id, title, views, time, user, thumbnail }) => {
+const VideoCard = ({
+  _id,
+  title,
+  views,
+  time,
+  user,
+  thumbnail,
+  avatar // added prop for user avatar
+}) => {
   // Build metadata array only with non-empty values
   const metadataItems = [];
   if (views) metadataItems.push(views);
@@ -19,18 +35,37 @@ const VideoCard = ({ _id, title, views, time, user, thumbnail }) => {
           sx={{ height: 180 }}
         />
         <CardContent>
-          <Typography gutterBottom variant="h6" component="div">
-            {title}
-          </Typography>
-          {/* Render metadata line only if there is content */}
-          {metadata && (
-            <Typography variant="body2" color="text.secondary">
-              {metadata}
-            </Typography>
-          )}
-          <Typography variant="caption" color="text.secondary">
-            {user}
-          </Typography>
+          {/* Container for avatar and text details */}
+          <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+            {/* Avatar on the left */}
+            <Avatar
+              src={avatar}
+              alt={user}
+              variant="circular" 
+              sx={{ width: 40, height: 40, mt: 0.5 }} // slightly move avatar up and set size
+            />
+            {/* Details on the right: title, user name, metadata */}
+            <Box sx={{ flex: 1 }}>
+              <Typography
+                /* Removed gutterBottom to reduce default margin */
+                variant="subtitle1"
+                component="div"
+                sx={{ fontWeight: 600, mb: 0.01 }} // bold title and small bottom margin
+              >
+                {title}
+              </Typography>
+              {/* Channel/user name line */}
+              <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.2}}>
+                {user}
+              </Typography>
+              {/* Render metadata (views and time) below */}
+              {metadata && (
+                <Typography variant="body2" color="text.secondary">
+                  {metadata}
+                </Typography>
+              )}
+            </Box>
+          </Box>
         </CardContent>
       </CardActionArea>
     </Card>

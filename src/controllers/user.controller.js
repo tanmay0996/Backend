@@ -497,6 +497,9 @@ const getWatchHistory = asyncHandler(async (req, res) => {
               videoFile: 1, 
               thumbnail: 1,
               owner: 1,
+              views:1,
+              createdAt:1,
+            
             },
           },
         ],

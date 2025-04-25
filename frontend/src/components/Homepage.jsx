@@ -130,6 +130,7 @@ const Homepage = () => {
                         time={new Date(video.createdAt).toLocaleDateString()}
                         user={video.ownerDetails?.username || "Unknown"}
                         thumbnail={video.thumbnail}
+                        avatar={video.ownerDetails?.avatar}
                       />
                     </Box>
                   </Grid>

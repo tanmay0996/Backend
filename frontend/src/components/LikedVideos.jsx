@@ -131,6 +131,7 @@ const LikedVideos = () => {
                       }
                       user={likedVideo.ownerDetails?.username || "Unknown"}
                       thumbnail={likedVideo.thumbnail}
+                      avatar={likedVideo.ownerDetails?.avatar}
                     />
                   </Box>
                 </Grid>

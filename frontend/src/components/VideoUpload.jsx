@@ -9,6 +9,7 @@ import {
   createTheme,
   ThemeProvider
 } from "@mui/material";
+import LottieLoader from '../animations/LottieUploader';
 
 // Tailwind‑inspired dark theme (gray‑900, gray‑800, text-white/gray-400)
 const darkTheme = createTheme({
@@ -100,7 +101,8 @@ const VideoUpload = () => {
           mt: 6,
           display: 'flex',
           flexDirection: 'column',
-          gap: 4
+          gap: 4,
+          position: 'relative'
         }}
       >
         <Typography variant="h4" align="center" sx={{ fontWeight: 600 }}>
@@ -257,6 +259,27 @@ const VideoUpload = () => {
           >
             {message}
           </Typography>
+        )}
+
+        {/* Overlay Lottie animation while uploading */}
+        {uploading && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              bgcolor: 'rgba(0, 0, 0, 0.5)',
+              borderRadius: 2,
+              zIndex: 10
+            }}
+          >
+             <LottieLoader open={uploading} size={200} />
+          </Box>
         )}
       </Box>
     </ThemeProvider>

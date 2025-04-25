@@ -14,7 +14,7 @@ import {
   CssBaseline
 } from "@mui/material";
 
-// Tailwind‑inspired dark theme (gray‑900, gray‑800, black accents)
+// Tailwind-inspired dark theme (gray-900, gray-800, black accents)
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -95,24 +95,17 @@ const WatchHistory = () => {
             {videos.length > 0 ? (
               <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}>
                 {videos.map((video) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3} key={video._id}>
+                  <Grid item xs={12} sm={6} md={4} key={video._id}>
                     <Box
                       sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        height: "100%",
+                        bgcolor: "background.paper",
                         borderRadius: 2,
                         overflow: "hidden",
-                        bgcolor: "background.paper",
-                        boxShadow: 1,
+                        boxShadow: 0, // start with no shadow
                         transition: "transform 0.3s, box-shadow 0.3s",
                         "&:hover": {
-                          transform: "translateY(-5px)",
-                          boxShadow: 4
-                        },
-                        // Only allow CardContent to grow; remove global img override
-                        "& .MuiCardContent-root": {
-                          flexGrow: 1
+                          transform: "translateY(-4px)",
+                          boxShadow: "0 4px 20px rgba(255,255,255,0.1)"
                         }
                       }}
                     >
@@ -130,7 +123,7 @@ const WatchHistory = () => {
                 ))}
               </Grid>
             ) : (
-              <Box sx={{ textAlign: "center", py: 4 }}>
+              <Box sx={{ textAlign: "center", py: 4, bgcolor: "background.default" }}>
                 <Typography variant="h6" sx={{ color: "text.secondary" }}>
                   No watch history found
                 </Typography>

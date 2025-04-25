@@ -26,13 +26,17 @@ const VideoCard = ({
   const metadata = metadataItems.join(" • ");
 
   return (
-    <Card sx={{ maxWidth: 345, margin: "auto" }}>
+    <Card sx={{ width: '100%', margin: "0" }}>
       <CardActionArea component={Link} to={`/video/v/${_id}`}>
         <CardMedia
           component="img"
-          image={thumbnail}
+          image={thumbnail || '/placeholder-image.jpg'}
           alt={title}
-          sx={{ height: 180 }}
+          sx={{ 
+            height: 180,
+            width: '100%',
+            objectFit: 'cover'
+          }}
         />
         <CardContent>
           {/* Container for avatar and text details */}
@@ -47,7 +51,6 @@ const VideoCard = ({
             {/* Details on the right: title, user name, metadata */}
             <Box sx={{ flex: 1 }}>
               <Typography
-                /* Removed gutterBottom to reduce default margin */
                 variant="subtitle1"
                 component="div"
                 sx={{ fontWeight: 600, mb: 0.01 }} // bold title and small bottom margin

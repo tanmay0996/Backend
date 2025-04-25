@@ -45,7 +45,12 @@ const Sidebar = ({ mobile = false, onClose }) => {
     }
   };
 
-  const handleSubscriptionsClick = () => setShowSubscriptions(prev => !prev);
+  // stop propagation for mobile so dropdown stays open
+  const handleSubscriptionsClick = (e) => {
+    e.stopPropagation();
+    setShowSubscriptions(prev => !prev);
+  };
+
   const isActive = (path) => path && location.pathname === path;
 
   // Tailwind‑inspired dark colors
@@ -162,16 +167,14 @@ const Sidebar = ({ mobile = false, onClose }) => {
               subscribedChannels.map((item) => (
                 <ListItem
                   key={item.subscribedChannel._id}
-                  component={Link}
-                  to={`/channel/${item.subscribedChannel._id}`}
                   disablePadding
                   sx={{ pl: 4, mb: 1 }}
                 >
                   <ListItemButton
+                    disabled
                     sx={{
                       p: 0,
-                      borderRadius: 1,
-                      "&:hover": { bgcolor: colors.hover }
+                      borderRadius: 1
                     }}
                   >
                     <ListItemIcon sx={{ minWidth: 36 }}>

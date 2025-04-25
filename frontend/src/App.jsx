@@ -20,7 +20,8 @@ function App() {
       <Routes>
         {/* All routes that share the same layout */}
         <Route element={<Layout />}>   {/* using it as a parent wrapper*/ }
-          <Route path="/" element={<Homepage />} />
+          <Route path="/" element={<RegistrationForm />} />
+          <Route path="/home" element={<Homepage />} />
           
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/login" element={<LoginPage />} />

@@ -92,7 +92,7 @@ const Homepage = () => {
   }, [searchQuery]); // Re-fetch when search query changes
 
   const clearSearch = () => {
-    navigate('/');
+    navigate('/home');
   };
 
   return (

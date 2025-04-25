@@ -8,6 +8,7 @@ import {
   Typography,
   TextField,
   Button,
+  Link,
   CssBaseline,
   createTheme,
   ThemeProvider
@@ -95,7 +96,7 @@ const RegistrationForm = () => {
       );
       if (response.status === 201) {
         setUser(response.data.data.user || response.data.data);
-        navigate("/");
+        navigate("/home");
       } else {
         console.log("Registration failed:", response.data);
         alert("User registration failed");
@@ -245,6 +246,14 @@ const RegistrationForm = () => {
             >
               Register
             </Button>
+
+            {/* Already have an account */}
+            <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+              Already have an account?{' '}
+              <Link component="button" variant="body2" onClick={() => navigate('/login')}>
+                Login
+              </Link>
+            </Typography>
           </Box>
         </Container>
       </Box>

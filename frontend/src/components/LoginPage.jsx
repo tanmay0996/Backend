@@ -55,7 +55,7 @@ const LoginPage = () => {
       const loggedInUser = response.data.data.user;
       setUser(loggedInUser);
       localStorage.setItem('currentUser', JSON.stringify(loggedInUser));
-      navigate('/');
+      navigate('/home');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {

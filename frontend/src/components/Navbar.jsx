@@ -50,19 +50,22 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/users/logout`,
         {},
         { withCredentials: true }
       );
-      if (res.status === 200) logout();
     } catch (error) {
       console.error("Logout error:", error);
-      logout();
-    } finally {
-      setDrawerOpen(false);
-      handleMenuClose();
     }
+    // Clear user context
+    logout();
+    // Close menus/drawers
+    handleMenuClose();
+    setDrawerOpen(false);
+    // Force redirect to register
+    // Using window.location to ensure full navigation
+    window.location.replace('/register');
   };
 
   // Search handlers
@@ -73,7 +76,7 @@ const Navbar = () => {
   const handleSearchSubmit = (e) => {
     if (e.key === 'Enter') {
       // Navigate to homepage with search query
-      navigate(`/?query=${encodeURIComponent(searchTerm)}`);
+      navigate(`/home?query=${encodeURIComponent(searchTerm)}`);
     }
   };
 
@@ -116,9 +119,8 @@ const Navbar = () => {
                 sx: { color: colors.textPrimary },
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton 
-                   
-                      edge="end" 
+                    <IconButton
+                      edge="end"
                       sx={{ color: colors.textSecondary }}
                       onClick={() => navigate(`/?query=${encodeURIComponent(searchTerm)}`)}
                     >
@@ -190,7 +192,7 @@ const Navbar = () => {
 
             <List>
               {[
-                { icon: <FaHome />, text: 'Home', to: '/' },
+                { icon: <FaHome />, text: 'Home', to: '/home' },
                 { icon: <FaClock />, text: 'Liked Videos', to: '/liked-videos' },
                 { icon: <FaVideo />, text: 'History', to: '/history' },
                 { icon: <FaFolder />, text: 'My Content', to: null },

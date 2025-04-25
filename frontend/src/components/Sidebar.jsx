@@ -66,7 +66,7 @@ const Sidebar = ({ mobile = false, onClose }) => {
   };
 
   const menuItems = [
-    { icon: <FaHome />, text: "Home", to: "/" },
+    { icon: <FaHome />, text: "Home", to: "/home" },
     { icon: <FaClock />, text: "Liked Videos", to: "/liked-videos" },
     { icon: <FaVideo />, text: "History", to: "/history" },
     { icon: <FaFolder />, text: "My Content", to: null }

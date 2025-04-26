@@ -124,7 +124,7 @@ const Navbar = () => {
                       sx={{ color: colors.textSecondary }}
                       onClick={() => navigate(`/?query=${encodeURIComponent(searchTerm)}`)}
                     >
-                      <FaSearch size={16}/>
+                      {/* <FaSearch size={16}/> */}
                     </IconButton>
                   </InputAdornment>
                 )

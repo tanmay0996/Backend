@@ -1,7 +1,7 @@
 // src/components/VideoPlayer.js
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom"; // Import Link for navigation
 import Comments from "../components/Comments"; // Import the Comments component
 import { AuthContext } from "../context/AuthContext";
 
@@ -31,7 +31,12 @@ const VideoPlayer = () => {
         // setIsSubscribed(videoData.isSubscribed || false);
       } catch (err) {
         console.error("Error fetching video:", err);
-        setError("Failed to load video details.");
+        // Show specific message if user is not authenticated
+        if (err.response && err.response.status === 401) {
+          setError("User is not signed in");
+        } else {
+          setError("Failed to load video details.");
+        }
       } finally {
         setLoading(false);
       }
@@ -95,7 +100,16 @@ const VideoPlayer = () => {
   };
 
   if (loading) return <div className="p-4 text-white">Loading video...</div>;
-  if (error) return <div className="p-4 text-red-500">{error}</div>;
+  if (error)
+    return (
+      <div className="p-4 text-red-500">
+        {error === "User is not signed in" ? (
+          <>User is not <Link to="/register">sign in</Link></>
+        ) : (
+          error
+        )}
+      </div>
+    );
   if (!video) return <div className="p-4 text-white">No video found.</div>;
 
   return (

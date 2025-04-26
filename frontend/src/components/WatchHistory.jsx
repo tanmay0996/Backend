@@ -9,6 +9,7 @@ import {
   Typography,
   CircularProgress,
   Alert,
+  Link,
   createTheme,
   ThemeProvider,
   CssBaseline
@@ -45,8 +46,13 @@ const WatchHistory = () => {
         setVideos(res.data.data);
         setLoading(false);
       })
-      .catch(() => {
-        setError("Failed to fetch watch history");
+      .catch((err) => {
+        // Show specific message if user is not authenticated
+        if (err.response && err.response.status === 401) {
+          setError("User is not signed in");
+        } else {
+          setError("Failed to fetch watch history");
+        }
         setLoading(false);
       });
   }, []);
@@ -69,7 +75,13 @@ const WatchHistory = () => {
         </Box>
       ) : error ? (
         <Container sx={{ py: 4 }}>
-          <Alert severity="error">{error}</Alert>
+          <Alert severity="error">
+            {error === "User is not signed in" ? (
+              <>User is not <Link href="/register">sign in</Link></>
+            ) : (
+              error
+            )}
+          </Alert>
         </Container>
       ) : (
         <Box

@@ -9,6 +9,7 @@ import {
   Typography,
   CircularProgress,
   Alert,
+  Link,
   createTheme,
   ThemeProvider,
   CssBaseline
@@ -44,7 +45,12 @@ const LikedVideos = () => {
         setLikedVideos(response?.data?.data || []);
       } catch (err) {
         console.error(err);
-        setError("Failed to fetch liked videos");
+        // Show specific message if user is not authenticated
+        if (err.response && err.response.status === 401) {
+          setError("User is not signed in");
+        } else {
+          setError("Failed to fetch liked videos");
+        }
       } finally {
         setLoading(false);
       }
@@ -70,7 +76,13 @@ const LikedVideos = () => {
         </Box>
       ) : error ? (
         <Container sx={{ py: 4 }}>
-          <Alert severity="error">{error}</Alert>
+          <Alert severity="error">
+            {error === "User is not signed in" ? (
+              <>User is not <Link href="/register">sign in</Link></>
+            ) : (
+              error
+            )}
+          </Alert>
         </Container>
       ) : likedVideos.length === 0 ? (
         <Box

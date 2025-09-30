@@ -1,8 +1,8 @@
 // src/components/VideoPlayer.js
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import { useParams, Link } from "react-router-dom"; // Import Link for navigation
-import Comments from "../components/Comments"; // Import the Comments component
+import { useParams, Link } from "react-router-dom"; 
+import Comments from "../components/Comments"; 
 import { AuthContext } from "../context/AuthContext";
 
 const VideoPlayer = () => {
@@ -27,16 +27,10 @@ const VideoPlayer = () => {
         setVideo(videoData);
         setLikeCount(videoData.likeCount || 0);
         setIsLiked(videoData.isLiked || false);
-        // Optionally, if your video API returns subscription status, initialize it here:
-        // setIsSubscribed(videoData.isSubscribed || false);
+        setIsSubscribed(videoData.owner?.isSubscribed || false);
       } catch (err) {
         console.error("Error fetching video:", err);
-        // Show specific message if user is not authenticated
-        if (err.response && err.response.status === 401) {
-          setError("User is not signed in");
-        } else {
-          setError("Failed to load video details.");
-        }
+        setError("Failed to load video details.");
       } finally {
         setLoading(false);
       }
@@ -45,17 +39,16 @@ const VideoPlayer = () => {
     fetchVideo();
   }, [videoId]);
 
-  // New useEffect to check subscription status after video data is loaded
+  // Check subscription status only for authenticated users
   useEffect(() => {
-    if (user && video && video.owner) {
-      // Call your endpoint to get all channels the user is subscribed to
+    if (user && video && video.owner && !video.owner.hasOwnProperty('isSubscribed')) {
+      // Only make this call if the subscription status wasn't included in the video response
       axios
         .get(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/subscriptions/u/${user._id}`, {
           withCredentials: true,
         })
         .then((response) => {
           const subscribedChannels = response.data.data;
-          // Check if the current video's channel is in the user's subscribed channels
           const subscribed = subscribedChannels.some(
             (item) => item.subscribedChannel._id === video.owner._id
           );
@@ -68,6 +61,11 @@ const VideoPlayer = () => {
   }, [user, video]);
 
   const handleLike = async () => {
+    if (!user) {
+      alert("Please sign in to like videos");
+      return;
+    }
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/likes/toggle/v/${videoId}`,
@@ -81,10 +79,16 @@ const VideoPlayer = () => {
       setIsLiked(updatedLikeStatus);
     } catch (err) {
       console.error("Error toggling like:", err);
+      alert("Failed to toggle like. Please try again.");
     }
   };
 
   const handleSubscribe = async () => {
+    if (!user) {
+      alert("Please sign in to subscribe to channels");
+      return;
+    }
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/subscriptions/c/${video.owner._id}`,
@@ -96,20 +100,12 @@ const VideoPlayer = () => {
       setIsSubscribed(response.data.data.subscribed);
     } catch (err) {
       console.error("Error toggling subscription:", err);
+      alert("Failed to toggle subscription. Please try again.");
     }
   };
 
   if (loading) return <div className="p-4 text-white">Loading video...</div>;
-  if (error)
-    return (
-      <div className="p-4 text-red-500">
-        {error === "User is not signed in" ? (
-          <>User is not <Link to="/register">sign in</Link></>
-        ) : (
-          error
-        )}
-      </div>
-    );
+  if (error) return <div className="p-4 text-red-500">{error}</div>;
   if (!video) return <div className="p-4 text-white">No video found.</div>;
 
   return (
@@ -145,7 +141,12 @@ const VideoPlayer = () => {
           <div className="mt-4 md:mt-0 flex items-center space-x-4">
             <button
               onClick={handleLike}
-              className="flex items-center space-x-1 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded"
+              className={`flex items-center space-x-1 px-3 py-2 rounded ${
+                user 
+                  ? "bg-gray-700 hover:bg-gray-600" 
+                  : "bg-gray-600 cursor-not-allowed opacity-75"
+              }`}
+              disabled={!user}
             >
               <span>{isLiked ? "👍" : "👍"}</span>
               <span>
@@ -159,15 +160,32 @@ const VideoPlayer = () => {
             <button
               onClick={handleSubscribe}
               className={`px-4 py-2 rounded-full ${
-                isSubscribed ? "bg-gray-600 hover:bg-gray-500" : "bg-red-600 hover:bg-red-700"
+                !user
+                  ? "bg-gray-600 cursor-not-allowed opacity-75"
+                  : isSubscribed 
+                    ? "bg-gray-600 hover:bg-gray-500" 
+                    : "bg-red-600 hover:bg-red-700"
               }`}
+              disabled={!user}
             >
-              {isSubscribed ? "Subscribed" : "Subscribe"}
+              {!user ? "Sign in to Subscribe" : isSubscribed ? "Subscribed" : "Subscribe"}
             </button>
           </div>
         </div>
 
         <p className="mt-4 text-gray-300">{video.description}</p>
+
+        {/* Show sign in prompt for non-authenticated users */}
+        {!user && (
+          <div className="mt-4 p-3 bg-blue-900 bg-opacity-50 rounded border border-blue-700">
+            <p className="text-blue-300">
+              <Link to="/register" className="text-blue-400 hover:underline">
+                Sign in
+              </Link>{" "}
+              to like videos, subscribe to channels, and add comments.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Comments Section */}

@@ -14,11 +14,23 @@ const getVideoComments = asyncHandler(async (req, res) => {
     if (!video) {
       throw new ApiError(404, "Video not found");
     }
+
+    // Prepare user ID for aggregation (null if not logged in)
+    const userId = req.user?._id ? new mongoose.Types.ObjectId(req.user._id) : null;
+    
+    console.log("=== Comment Fetch Debug ===");
+    console.log("Logged in user ID:", userId ? userId.toString() : "No user");
   
     const commentsAggregate = Comment.aggregate([
       {
         $match: {
           video: new mongoose.Types.ObjectId(videoId),
+        },
+      },
+      {
+        $addFields: {
+          // Store original owner ObjectId before lookup
+          originalOwnerId: "$owner",
         },
       },
       {
@@ -41,20 +53,14 @@ const getVideoComments = asyncHandler(async (req, res) => {
         $addFields: {
           likesCount: { $size: "$likes" },
           owner: { $first: "$owner" },
-          isLiked: {
-            $cond: {
-              if: { $in: [req.user?._id, "$likes.likedBy"] },
-              then: true,
-              else: false,
-            },
-          },
-          // Add isOwner field: compare logged in user's id with comment owner's id.
-          isOwner: {
-            $eq: [
-              new mongoose.Types.ObjectId(req.user._id),
-              "$owner._id",
-            ],
-          },
+          // Check if current user liked this comment
+          isLiked: userId ? {
+            $in: [userId, "$likes.likedBy"]
+          } : false,
+          // Check if current user owns this comment using the original owner ID
+          isOwner: userId ? {
+            $eq: [userId, "$originalOwnerId"]
+          } : false,
         },
       },
       {
@@ -85,16 +91,23 @@ const getVideoComments = asyncHandler(async (req, res) => {
     };
   
     const comments = await Comment.aggregatePaginate(commentsAggregate, options);
+    
+    console.log("Sample comment data:");
+    if (comments.docs && comments.docs.length > 0) {
+      const firstComment = comments.docs[0];
+      console.log("First comment owner ID:", firstComment.owner._id);
+      console.log("First comment isOwner:", firstComment.isOwner);
+      console.log("Match:", userId ? userId.toString() === firstComment.owner._id.toString() : false);
+    }
   
     return res
       .status(200)
       .json(
         new ApiResponse(200, comments, "Comments fetched successfully")
       );
-  });
-  
+});
 
-  const addComment = asyncHandler(async (req, res) => {
+const addComment = asyncHandler(async (req, res) => {
     const { content } = req.body;
     const { videoId } = req.params;
   

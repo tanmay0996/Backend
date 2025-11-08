@@ -99,7 +99,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true, //Bydefault cookies can be modified by frontend
     secure: true, //Enabling these opts: only server can modify cookies
-    sameSite: "None" ,
+    sameSite: "none" ,
     maxAge:   7 * 24 * 60 * 60 * 1000, // without this --> session cookie
   };
 
@@ -158,7 +158,8 @@ const loginUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true, //Bydefault cookies can be modified by frontend
     secure: true, //Enabling these opts: only server can modify cookies
-    sameSite: "None" 
+    sameSite: "none",
+    maxAge: 7 * 24 * 60 * 60 * 1000  
   };
 
   return res // req/res ke pass bhi cookie ka access hai via cookieParser(middleware)
@@ -235,7 +236,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const options = {
       httpOnly: true,
       secure: true,
-      sameSite: "None" 
+      sameSite: "none",
+      maxAge: 7 * 24 * 60 * 60 * 1000 //for consistency 
     };
 
     return res

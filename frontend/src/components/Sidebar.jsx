@@ -53,16 +53,16 @@ const Sidebar = ({ mobile = false, onClose }) => {
 
   const isActive = (path) => path && location.pathname === path;
 
-  // Light theme colors
+  // Tailwind‑inspired dark colors
   const colors = {
-    bg: "#F5F5DC",           // Beige
-    paper: "#ffffff",        // White
-    textPrimary: "#333333",  // Dark text
-    textSecondary: "#666666",// Gray text
-    hover: "#F4A460",        // Sandy brown
-    selected: "#F4A460",     // Sandy brown
-    uploadBg: "#E35336",     // Primary color
-    uploadHover: "#c94328"   // Darker primary
+    bg: "#111827",           // bg-gray-900
+    paper: "#1f2937",        // bg-gray-800
+    textPrimary: "#ffffff",  // text-white
+    textSecondary: "#9ca3af",// text-gray-400
+    hover: "#374151",        // bg-gray-700
+    selected: "#4b5563",     // bg-gray-600
+    uploadBg: "#dc2626",     // bg-red-600
+    uploadHover: "#b91c1c"   // bg-red-700
   };
 
   const menuItems = [
@@ -93,14 +93,12 @@ const Sidebar = ({ mobile = false, onClose }) => {
           gap: 1,
           mb: 4,
           color: colors.textPrimary,
-          fontWeight: 700,
-          fontFamily: 'Inter, sans-serif'
+          fontWeight: 600
         }}
       >
         <Box
           sx={{
-            bgcolor: "#E35336",
-            color: "#ffffff",
+            bgcolor: colors.textSecondary,
             p: 1,
             borderRadius: 1,
             display: "flex",
@@ -129,7 +127,7 @@ const Sidebar = ({ mobile = false, onClose }) => {
               <ListItemIcon sx={{ color: colors.textSecondary, minWidth: 36 }}>
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.text} primaryTypographyProps={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }} sx={{ color: colors.textPrimary }} />
+              <ListItemText primary={item.text} sx={{ color: colors.textPrimary }} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -147,7 +145,7 @@ const Sidebar = ({ mobile = false, onClose }) => {
             <ListItemIcon sx={{ color: colors.textSecondary, minWidth: 36 }}>
               <FaUsers />
             </ListItemIcon>
-            <ListItemText primary="Subscriptions" primaryTypographyProps={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }} sx={{ color: colors.textPrimary }} />
+            <ListItemText primary="Subscriptions" sx={{ color: colors.textPrimary }} />
             {showSubscriptions ? (
               <ExpandLess sx={{ color: colors.textSecondary }} />
             ) : (
@@ -162,7 +160,6 @@ const Sidebar = ({ mobile = false, onClose }) => {
               <ListItem sx={{ pl: 4 }}>
                 <ListItemText
                   primary="No subscriptions found"
-                  primaryTypographyProps={{ fontFamily: 'Inter, sans-serif' }}
                   sx={{ color: colors.textSecondary }}
                 />
               </ListItem>
@@ -190,7 +187,6 @@ const Sidebar = ({ mobile = false, onClose }) => {
                     </ListItemIcon>
                     <ListItemText
                       primary={item.subscribedChannel.username}
-                      primaryTypographyProps={{ fontFamily: 'Inter, sans-serif' }}
                       sx={{ color: colors.textPrimary }}
                     />
                   </ListItemButton>
@@ -215,7 +211,7 @@ const Sidebar = ({ mobile = false, onClose }) => {
             <ListItemIcon sx={{ color: "#fff", minWidth: 36 }}>
               <PiUploadFill />
             </ListItemIcon>
-            <ListItemText primary="Upload Video" primaryTypographyProps={{ fontFamily: 'Inter, sans-serif', fontWeight: 600 }} sx={{ color: "#fff" }} />
+            <ListItemText primary="Upload Video" sx={{ color: "#fff" }} />
           </ListItemButton>
         </ListItem>
       </List>

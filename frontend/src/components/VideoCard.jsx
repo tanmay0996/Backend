@@ -27,7 +27,7 @@ const VideoCard = ({
   const metadata = metadataItems.join(" • ");
 
   return (
-    <Card sx={{ width: '100%', fontFamily: 'Inter, sans-serif' }}>
+    <Card sx={{ width: '100%' }}>
       <CardActionArea component={Link} to={`/video/v/${_id}`}>  
         <CardMedia
           component="img"
@@ -52,21 +52,21 @@ const VideoCard = ({
               <Typography
                 variant="subtitle1"
                 component="div"
-                sx={{ fontWeight: 600, mb: 0.5, lineHeight: 1.2, color: '#333333', fontFamily: 'Inter, sans-serif' }}
+                sx={{ fontWeight: 600, mb: 0.5, lineHeight: 1.2 }}
                 noWrap
               >
                 {title}
               </Typography>
 
-              <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5, fontFamily: 'Inter, sans-serif' }} noWrap>
+              <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }} noWrap>
                 {user}
               </Typography>
 
               {metadata && (
-                <Typography
-                  variant="body2"
+                <Typography 
+                  variant="body2" 
                   color="text.secondary"
-                  sx={{ mb: description ? 1 : 0, fontFamily: 'Inter, sans-serif' }}
+                  sx={{ mb: description ? 1 : 0 }}
                   noWrap
                 >
                   {metadata}
@@ -81,8 +81,7 @@ const VideoCard = ({
                     display: '-webkit-box',
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    fontFamily: 'Inter, sans-serif'
+                    overflow: 'hidden'
                   }}
                 >
                   {description}

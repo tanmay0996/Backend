@@ -113,11 +113,11 @@ const Comments = ({ videoId }) => {
     }
   };
 
-  if (loading) return <div style={{ color: '#666666', fontFamily: 'Inter, sans-serif' }}>Loading comments...</div>;
-  if (error) return <div className="text-red-500" style={{ fontFamily: 'Inter, sans-serif' }}>{error}</div>;
+  if (loading) return <div className="text-gray-400">Loading comments...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className="rounded-lg p-4" style={{ backgroundColor: '#ffffff', border: '1px solid #e0e0e0' }}>
+    <div className="bg-gray-800 rounded-lg p-4">
       {/* Add Comment Form */}
       {user ? (
         <form onSubmit={handleAddComment} className="mb-6">
@@ -132,8 +132,7 @@ const Comments = ({ videoId }) => {
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Add a comment..."
-                className="w-full p-3 rounded-lg resize-none focus:outline-none focus:ring-2"
-                style={{ backgroundColor: '#F5F5DC', color: '#333333', border: '1px solid #A0522D', fontFamily: 'Inter, sans-serif' }}
+                className="w-full bg-gray-700 text-white p-3 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows="3"
                 disabled={isSubmitting}
               />
@@ -141,22 +140,18 @@ const Comments = ({ videoId }) => {
                 <button
                   type="button"
                   onClick={() => setNewComment("")}
-                  className="px-4 py-2"
-                  style={{ color: '#666666', fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
+                  className="px-4 py-2 text-gray-400 hover:text-white"
                   disabled={isSubmitting}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded"
-                  style={{
-                    backgroundColor: newComment.trim() && !isSubmitting ? '#E35336' : '#cccccc',
-                    color: '#ffffff',
-                    fontFamily: 'Inter, sans-serif',
-                    fontWeight: 600,
-                    cursor: newComment.trim() && !isSubmitting ? 'pointer' : 'not-allowed'
-                  }}
+                  className={`px-4 py-2 rounded ${
+                    newComment.trim() && !isSubmitting
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-gray-600 text-gray-400 cursor-not-allowed"
+                  }`}
                   disabled={!newComment.trim() || isSubmitting}
                 >
                   {isSubmitting ? "Posting..." : "Comment"}
@@ -166,9 +161,9 @@ const Comments = ({ videoId }) => {
           </div>
         </form>
       ) : (
-        <div className="mb-6 p-4 rounded-lg" style={{ backgroundColor: '#FFF8DC', border: '1px solid #E35336' }}>
-          <p style={{ color: '#333333', fontFamily: 'Inter, sans-serif' }}>
-            <Link to="/register" style={{ color: '#E35336', textDecoration: 'underline', fontWeight: 600 }}>
+        <div className="mb-6 p-4 bg-gray-700 rounded-lg border border-gray-600">
+          <p className="text-gray-300">
+            <Link to="/register" className="text-blue-400 hover:underline">
               Sign in
             </Link>{" "}
             to add a comment
@@ -179,7 +174,7 @@ const Comments = ({ videoId }) => {
       {/* Comments List */}
       <div className="space-y-4">
         {comments.length === 0 ? (
-          <p className="text-center py-8" style={{ color: '#666666', fontFamily: 'Inter, sans-serif' }}>
+          <p className="text-gray-400 text-center py-8">
             No comments yet. Be the first to comment!
           </p>
         ) : (
@@ -191,28 +186,29 @@ const Comments = ({ videoId }) => {
                 className="w-10 h-10 rounded-full"
               />
               <div className="flex-1">
-                <div className="rounded-lg p-3" style={{ backgroundColor: '#F5F5DC', border: '1px solid #e0e0e0' }}>
+                <div className="bg-gray-700 rounded-lg p-3">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold" style={{ color: '#333333', fontFamily: 'Inter, sans-serif', fontWeight: 600 }}>
+                    <span className="font-semibold text-white">
                       {comment.owner.username}
                     </span>
-                    <span className="text-xs" style={{ color: '#666666', fontFamily: 'Inter, sans-serif' }}>
+                    <span className="text-xs text-gray-400">
                       {new Date(comment.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <p style={{ color: '#333333', fontFamily: 'Inter, sans-serif' }}>{comment.content}</p>
+                  <p className="text-gray-300">{comment.content}</p>
                 </div>
                 
                 {/* Comment Actions */}
                 <div className="flex items-center space-x-4 mt-2 ml-3">
                   <button
                     onClick={() => handleLikeComment(comment._id)}
-                    className="flex items-center space-x-1 text-sm"
-                    style={{
-                      color: user ? (comment.isLiked ? '#E35336' : '#666666') : '#cccccc',
-                      fontFamily: 'Inter, sans-serif',
-                      cursor: user ? 'pointer' : 'not-allowed'
-                    }}
+                    className={`flex items-center space-x-1 text-sm ${
+                      user
+                        ? comment.isLiked
+                          ? "text-blue-500"
+                          : "text-gray-400 hover:text-white"
+                        : "text-gray-400 cursor-not-allowed"
+                    }`}
                     disabled={!user}
                   >
                     <span>{comment.isLiked ? "👍" : "👍"}</span>
@@ -226,8 +222,7 @@ const Comments = ({ videoId }) => {
                     return shouldShowDelete ? (
                       <button
                         onClick={() => handleDeleteComment(comment._id)}
-                        className="text-sm"
-                        style={{ color: '#E35336', fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
+                        className="text-sm text-red-500 hover:text-red-400"
                       >
                         Delete
                       </button>

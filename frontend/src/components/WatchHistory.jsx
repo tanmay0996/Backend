@@ -114,10 +114,9 @@ const WatchHistory = () => {
                         borderRadius: 2,
                         overflow: "hidden",
                         transition: "transform 0.3s, box-shadow 0.3s",
-                        border: '1px solid #e0e0e0',
                         "&:hover": {
                           transform: "translateY(-4px)",
-                          boxShadow: "0 4px 20px rgba(227, 83, 54, 0.2)"
+                          boxShadow: "0 4px 20px rgba(255,255,255,0.1)"
                         }
                       }}
                     >

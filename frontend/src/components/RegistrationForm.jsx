@@ -15,21 +15,18 @@ import {
 } from "@mui/material";
 import LottieLoader from "../animations/LottieLoader";
 
-// Light theme
-const lightTheme = createTheme({
+// Tailwind‑inspired dark theme (gray‑900, gray‑800, text-white/gray-400)
+const darkTheme = createTheme({
   palette: {
-    mode: "light",
+    mode: "dark",
     background: {
-      default: "#F5F5DC", // Beige
-      paper: "#ffffff"    // White
+      default: "#111827", // bg-gray-900
+      paper: "#1f2937"    // bg-gray-800
     },
     text: {
-      primary: "#333333", // Dark text
-      secondary: "#666666"// Gray text
+      primary: "#ffffff", // text-white
+      secondary: "#9ca3af"// text-gray-400
     }
-  },
-  typography: {
-    fontFamily: 'Inter, sans-serif'
   }
 });
 
@@ -116,7 +113,7 @@ const RegistrationForm = () => {
   };
 
   return (
-    <ThemeProvider theme={lightTheme}>
+    <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Box
         sx={{
@@ -154,8 +151,7 @@ const RegistrationForm = () => {
               onChange={handleChange}
               required
               fullWidth
-              InputProps={{ sx: { bgcolor: "#F5F5DC", color: "text.primary" } }}
-              InputLabelProps={{ sx: { fontFamily: 'Inter, sans-serif' } }}
+              InputProps={{ sx: { bgcolor: "background.default", color: "text.primary" } }}
             />
             <TextField
               label="Username"
@@ -164,8 +160,7 @@ const RegistrationForm = () => {
               onChange={handleChange}
               required
               fullWidth
-              InputProps={{ sx: { bgcolor: "#F5F5DC", color: "text.primary" } }}
-              InputLabelProps={{ sx: { fontFamily: 'Inter, sans-serif' } }}
+              InputProps={{ sx: { bgcolor: "background.default", color: "text.primary" } }}
             />
             <TextField
               label="Email"
@@ -175,8 +170,7 @@ const RegistrationForm = () => {
               onChange={handleChange}
               required
               fullWidth
-              InputProps={{ sx: { bgcolor: "#F5F5DC", color: "text.primary" } }}
-              InputLabelProps={{ sx: { fontFamily: 'Inter, sans-serif' } }}
+              InputProps={{ sx: { bgcolor: "background.default", color: "text.primary" } }}
             />
             <TextField
               label="Password"
@@ -186,8 +180,7 @@ const RegistrationForm = () => {
               onChange={handleChange}
               required
               fullWidth
-              InputProps={{ sx: { bgcolor: "#F5F5DC", color: "text.primary" } }}
-              InputLabelProps={{ sx: { fontFamily: 'Inter, sans-serif' } }}
+              InputProps={{ sx: { bgcolor: "background.default", color: "text.primary" } }}
             />
             <TextField
               label="Confirm Password"
@@ -197,8 +190,7 @@ const RegistrationForm = () => {
               onChange={handleChange}
               required
               fullWidth
-              InputProps={{ sx: { bgcolor: "#F5F5DC", color: "text.primary" } }}
-              InputLabelProps={{ sx: { fontFamily: 'Inter, sans-serif' } }}
+              InputProps={{ sx: { bgcolor: "background.default", color: "text.primary" } }}
             />
 
             {/* Avatar Upload */}
@@ -206,7 +198,7 @@ const RegistrationForm = () => {
               <Button
                 variant="contained"
                 component="label"
-                sx={{ bgcolor: "#E35336", '&:hover': { bgcolor: "#c94328" }, fontFamily: 'Inter, sans-serif', fontWeight: 600, textTransform: 'none' }}
+                sx={{ bgcolor: "purple.600", '&:hover': { bgcolor: "purple.700" } }}
               >
                 Select Avatar *
                 <input
@@ -229,7 +221,7 @@ const RegistrationForm = () => {
               <Button
                 variant="contained"
                 component="label"
-                sx={{ bgcolor: "#E35336", '&:hover': { bgcolor: "#c94328" }, fontFamily: 'Inter, sans-serif', fontWeight: 600, textTransform: 'none' }}
+                sx={{ bgcolor: "purple.600", '&:hover': { bgcolor: "purple.700" } }}
               >
                 Select Cover Image*
                 <input
@@ -250,23 +242,15 @@ const RegistrationForm = () => {
             <Button
               type="submit"
               variant="contained"
-              sx={{
-                bgcolor: "#E35336",
-                '&:hover': { bgcolor: "#c94328" },
-                mt: 2,
-                fontFamily: 'Inter, sans-serif',
-                fontWeight: 600,
-                textTransform: 'none',
-                fontSize: '1rem'
-              }}
+              sx={{ bgcolor: "purple.600", '&:hover': { bgcolor: "purple.700" }, mt: 2 }}
             >
               Register
             </Button>
 
             {/* Already have an account */}
-            <Typography variant="body2" align="center" sx={{ mt: 2, fontFamily: 'Inter, sans-serif' }}>
+            <Typography variant="body2" align="center" sx={{ mt: 2 }}>
               Already have an account?{' '}
-              <Link component="button" variant="body2" onClick={() => navigate('/login')} sx={{ fontWeight: 600, color: '#E35336', fontFamily: 'Inter, sans-serif' }}>
+              <Link component="button" variant="body2" onClick={() => navigate('/login')}>
                 Login
               </Link>
             </Typography>

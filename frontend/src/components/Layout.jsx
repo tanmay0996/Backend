@@ -13,7 +13,7 @@ const Layout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-black text-white">
+    <div className="flex h-screen" style={{ backgroundColor: '#F5F5DC', color: '#333333', fontFamily: 'Inter, sans-serif' }}>
       {!isMobile && <Sidebar />}
 
       <Drawer
@@ -26,8 +26,8 @@ const Layout = () => {
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: 240,
-            bgcolor: "black",
-            color: "white",
+            bgcolor: "#F5F5DC",
+            color: "#333333",
           },
         }}
       >

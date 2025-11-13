@@ -15,18 +15,21 @@ import {
 } from "@mui/material";
 import { FaTimes } from "react-icons/fa";
 
-// Tailwind‑inspired dark theme (gray‑900, gray‑800, text-white/gray-400)
-const darkTheme = createTheme({
+// Light theme
+const lightTheme = createTheme({
   palette: {
-    mode: "dark",
+    mode: "light",
     background: {
-      default: "#111827",  // bg-gray-900
-      paper: "#1f2937"     // bg-gray-800
+      default: "#F5F5DC",  // Beige
+      paper: "#ffffff"     // White
     },
     text: {
-      primary: "#ffffff",  // text-white
-      secondary: "#9ca3af" // text-gray-400
+      primary: "#333333",  // Dark text
+      secondary: "#666666" // Gray text
     }
+  },
+  typography: {
+    fontFamily: 'Inter, sans-serif'
   }
 });
 
@@ -96,7 +99,7 @@ const Homepage = () => {
   };
 
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={lightTheme}>
       <CssBaseline />
 
       {loading ? (
@@ -137,13 +140,13 @@ const Homepage = () => {
                   label={`"${searchQuery}"`}
                   onDelete={clearSearch}
                   deleteIcon={<FaTimes />}
-                  sx={{ 
-                    bgcolor: 'rgba(255,255,255,0.1)', 
-                    color: 'text.primary',
+                  sx={{
+                    bgcolor: '#F4A460',
+                    color: '#ffffff',
                     '& .MuiChip-deleteIcon': {
-                      color: 'text.secondary',
+                      color: '#ffffff',
                       '&:hover': {
-                        color: 'text.primary'
+                        color: '#E35336'
                       }
                     }
                   }}
@@ -161,9 +164,10 @@ const Homepage = () => {
                         borderRadius: 2,
                         overflow: "hidden",
                         transition: "transform 0.3s, box-shadow 0.3s",
+                        border: '1px solid #e0e0e0',
                         '&:hover': {
                           transform: "translateY(-4px)",
-                          boxShadow: "0 4px 20px rgba(255,255,255,0.1)"
+                          boxShadow: "0 4px 20px rgba(227, 83, 54, 0.2)"
                         }
                       }}
                     >

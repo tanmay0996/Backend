@@ -17,18 +17,21 @@ import {
 import { Link as RouterLink } from 'react-router-dom';
 import LottieLoader from '../animations/LottieLoader';
 
-// Tailwind‑inspired dark theme (gray‑900, gray‑800, text-white/gray-400)
-const darkTheme = createTheme({
+// Light theme
+const lightTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: 'light',
     background: {
-      default: '#111827',  // bg-gray-900
-      paper: '#1f2937'     // bg-gray-800
+      default: '#F5F5DC',  // Beige
+      paper: '#ffffff'     // White
     },
     text: {
-      primary: '#ffffff',  // text-white
-      secondary: '#9ca3af' // text-gray-400
+      primary: '#333333',  // Dark text
+      secondary: '#666666' // Gray text
     }
+  },
+  typography: {
+    fontFamily: 'Inter, sans-serif'
   }
 });
 
@@ -64,7 +67,7 @@ const LoginPage = () => {
   };
 
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={lightTheme}>
       <CssBaseline />
       <Box
         sx={{
@@ -108,7 +111,8 @@ const LoginPage = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              InputProps={{ sx: { bgcolor: 'background.default', color: 'text.primary' } }}
+              InputProps={{ sx: { bgcolor: '#F5F5DC', color: 'text.primary' } }}
+              InputLabelProps={{ sx: { fontFamily: 'Inter, sans-serif' } }}
             />
 
             <TextField
@@ -119,7 +123,8 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              InputProps={{ sx: { bgcolor: 'background.default', color: 'text.primary' } }}
+              InputProps={{ sx: { bgcolor: '#F5F5DC', color: 'text.primary' } }}
+              InputLabelProps={{ sx: { fontFamily: 'Inter, sans-serif' } }}
             />
 
             <Box sx={{ mt: 2 }}>
@@ -128,7 +133,14 @@ const LoginPage = () => {
                 variant="contained"
                 fullWidth
                 disabled={loading}
-                sx={{ bgcolor: 'purple.600', '&:hover': { bgcolor: 'purple.700' } }}
+                sx={{
+                  bgcolor: '#E35336',
+                  '&:hover': { bgcolor: '#c94328' },
+                  fontFamily: 'Inter, sans-serif',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  fontSize: '1rem'
+                }}
               >
                 {loading ? 'Logging In…' : 'Login'}
               </Button>
@@ -136,9 +148,9 @@ const LoginPage = () => {
 
             {/* New user sign-up link */}
             <Box sx={{ mt: 2, textAlign: 'center' }}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'Inter, sans-serif' }}>
                 New here?{' '}
-                <Link component={RouterLink} to="/register" sx={{ fontWeight: 500 }}>
+                <Link component={RouterLink} to="/register" sx={{ fontWeight: 600, color: '#E35336', fontFamily: 'Inter, sans-serif' }}>
                   Sign Up
                 </Link>
               </Typography>

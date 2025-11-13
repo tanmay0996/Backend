@@ -81,16 +81,16 @@ const Navbar = () => {
   };
 
   const colors = {
-    appBar: "#111827",        // bg-gray-900
-    searchBg: "#1f2937",      // bg-gray-800
-    searchBorder: "#374151",  // border-gray-700
-    drawerBg: "#111827",      // bg-gray-900
-    divider: "#374151",       // border-gray-700
-    textPrimary: "#ffffff",   // text-white
-    textSecondary: "#9ca3af", // text-gray-400
-    hover: "#374151",         // bg-gray-700
-    uploadBg: "#dc2626",      // bg-red-600
-    uploadHover: "#b91c1c"    // bg-red-700
+    appBar: "#E35336",        // Primary color
+    searchBg: "#F5F5DC",      // Beige
+    searchBorder: "#A0522D",  // Sienna
+    drawerBg: "#F5F5DC",      // Beige
+    divider: "#A0522D",       // Sienna
+    textPrimary: "#333333",   // Dark text
+    textSecondary: "#666666", // Gray text
+    hover: "#F4A460",         // Sandy brown
+    uploadBg: "#E35336",      // Primary color
+    uploadHover: "#c94328"    // Darker primary
   };
 
   return (
@@ -116,7 +116,7 @@ const Navbar = () => {
                 }
               }}
               InputProps={{
-                sx: { color: colors.textPrimary },
+                sx: { color: colors.textPrimary, fontFamily: 'Inter, sans-serif' },
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
@@ -136,8 +136,10 @@ const Navbar = () => {
             <Box display="flex" alignItems="center" gap={1}>
               <Typography
                 sx={{
-                  color: colors.textPrimary,
-                  display: { xs: 'none', sm: 'block' }
+                  color: '#ffffff',
+                  display: { xs: 'none', sm: 'block' },
+                  fontFamily: 'Inter, sans-serif',
+                  fontWeight: 500
                 }}
               >
                 {user.fullName}
@@ -161,7 +163,7 @@ const Navbar = () => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem onClick={handleLogout} sx={{ color: '#f44336' }}>
+        <MenuItem onClick={handleLogout} sx={{ color: '#E35336', fontFamily: 'Inter, sans-serif' }}>
           Logout
         </MenuItem>
       </Menu>
@@ -186,7 +188,7 @@ const Navbar = () => {
           <Box>
             <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
               <Avatar src={user?.avatar} />
-              <Typography sx={{ color: colors.textPrimary }}>{user?.fullName}</Typography>
+              <Typography sx={{ color: colors.textPrimary, fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>{user?.fullName}</Typography>
             </Box>
             <Divider sx={{ bgcolor: colors.divider }} />
 
@@ -216,7 +218,8 @@ const Navbar = () => {
                     </ListItemIcon>
                     <ListItemText
                       primary={item.text}
-                      sx={{ color: item.text === 'Upload Video' ? '#fff' : colors.textPrimary }}
+                      primaryTypographyProps={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
+                      sx={{ color: item.text === 'Upload Video' ? colors.textPrimary : colors.textPrimary }}
                     />
                   </ListItemButton>
                 </ListItem>
@@ -230,7 +233,8 @@ const Navbar = () => {
               <ListItemButton onClick={handleLogout} sx={{ '&:hover': { bgcolor: colors.hover } }}>
                 <ListItemText
                   primary="Logout"
-                  sx={{ textAlign: 'center', color: '#f44336' }}
+                  primaryTypographyProps={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
+                  sx={{ textAlign: 'center', color: '#E35336' }}
                 />
               </ListItemButton>
             </ListItem>

@@ -11,18 +11,21 @@ import {
 } from "@mui/material";
 import LottieLoader from '../animations/LottieUploader';
 
-// Tailwind‑inspired dark theme (gray‑900, gray‑800, text-white/gray-400)
-const darkTheme = createTheme({
+// Light theme
+const lightTheme = createTheme({
   palette: {
-    mode: "dark",
+    mode: "light",
     background: {
-      default: "#111827", // bg-gray-900
-      paper: "#1f2937"    // bg-gray-800
+      default: "#F5F5DC", // Beige
+      paper: "#ffffff"    // White
     },
     text: {
-      primary: "#ffffff", // text-white
-      secondary: "#9ca3af"// text-gray-400
+      primary: "#333333", // Dark text
+      secondary: "#666666"// Gray text
     }
+  },
+  typography: {
+    fontFamily: 'Inter, sans-serif'
   }
 });
 
@@ -84,7 +87,7 @@ const VideoUpload = () => {
   };
 
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={lightTheme}>
       <CssBaseline />
       <Box
         component="form"
@@ -113,11 +116,12 @@ const VideoUpload = () => {
         <Box
           sx={{
             border: '2px dashed',
-            borderColor: 'grey.600',
+            borderColor: '#A0522D',
             borderRadius: 1,
             p: 4,
             textAlign: 'center',
-            '&:hover': { borderColor: 'purple.500' }
+            backgroundColor: '#FFF8DC',
+            '&:hover': { borderColor: '#E35336' }
           }}
         >
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
@@ -126,7 +130,7 @@ const VideoUpload = () => {
           <Button
             variant="contained"
             component="label"
-            sx={{ bgcolor: 'purple.600', '&:hover': { bgcolor: 'purple.700' } }}
+            sx={{ bgcolor: '#E35336', '&:hover': { bgcolor: '#c94328' }, fontFamily: 'Inter, sans-serif', fontWeight: 600, textTransform: 'none' }}
           >
             Select Video
             <input
@@ -158,15 +162,15 @@ const VideoUpload = () => {
             </Typography>
             <Box
               sx={{
-                border: '1px solid',
-                borderColor: 'grey.600',
+                border: '2px solid',
+                borderColor: '#A0522D',
                 borderRadius: 1,
                 height: 160,
                 width: '100%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                bgcolor: 'background.paper',
+                bgcolor: '#FFF8DC',
                 position: 'relative',
                 overflow: 'hidden'
               }}
@@ -207,11 +211,12 @@ const VideoUpload = () => {
                 style={{
                   width: '100%',
                   padding: '12px',
-                  backgroundColor: '#1f2937',
-                  border: '1px solid #4b5563',
+                  backgroundColor: '#F5F5DC',
+                  border: '1px solid #A0522D',
                   borderRadius: '4px',
-                  color: '#fff',
-                  outline: 'none'
+                  color: '#333333',
+                  outline: 'none',
+                  fontFamily: 'Inter, sans-serif'
                 }}
               />
             </Box>
@@ -244,7 +249,7 @@ const VideoUpload = () => {
             type="submit"
             variant="contained"
             disabled={uploading}
-            sx={{ bgcolor: 'purple.600', '&:hover': { bgcolor: 'purple.700' } }}
+            sx={{ bgcolor: '#E35336', '&:hover': { bgcolor: '#c94328' }, fontFamily: 'Inter, sans-serif', fontWeight: 600, textTransform: 'none' }}
           >
             {uploading ? 'Uploading...' : 'Publish'}
           </Button>

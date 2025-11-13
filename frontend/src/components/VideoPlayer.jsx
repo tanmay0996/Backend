@@ -104,14 +104,14 @@ const VideoPlayer = () => {
     }
   };
 
-  if (loading) return <div className="p-4 text-white">Loading video...</div>;
-  if (error) return <div className="p-4 text-red-500">{error}</div>;
-  if (!video) return <div className="p-4 text-white">No video found.</div>;
+  if (loading) return <div className="p-4" style={{ color: '#333333', fontFamily: 'Inter, sans-serif' }}>Loading video...</div>;
+  if (error) return <div className="p-4 text-red-500" style={{ fontFamily: 'Inter, sans-serif' }}>{error}</div>;
+  if (!video) return <div className="p-4" style={{ color: '#333333', fontFamily: 'Inter, sans-serif' }}>No video found.</div>;
 
   return (
-    <div className="w-full bg-gray-900 text-white min-h-screen p-4">
+    <div className="w-full min-h-screen p-4" style={{ backgroundColor: '#F5F5DC', color: '#333333', fontFamily: 'Inter, sans-serif' }}>
       {/* Video Player */}
-      <div className="w-full bg-black rounded-lg overflow-hidden shadow-lg">
+      <div className="w-full rounded-lg overflow-hidden shadow-lg" style={{ backgroundColor: '#000000', border: '2px solid #A0522D' }}>
         <video className="w-full h-96 object-cover" controls>
           <source src={video.videoFile} type="video/mp4" />
           Your browser does not support the video tag.
@@ -119,19 +119,19 @@ const VideoPlayer = () => {
       </div>
 
       {/* Video Details and Action Buttons */}
-      <div className="mt-6 p-4 bg-gray-800 rounded-lg shadow">
+      <div className="mt-6 p-4 rounded-lg shadow" style={{ backgroundColor: '#ffffff', border: '1px solid #e0e0e0' }}>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div className="flex items-center">
             {video.owner && (
               <img
                 src={video.owner.avatar}
                 alt={video.owner.username}
-                className="w-12 h-12 rounded-full mr-4 border-2 border-gray-700"
+                className="w-12 h-12 rounded-full mr-4 border-2" style={{ borderColor: '#A0522D' }}
               />
             )}
             <div>
-              <h1 className="text-2xl font-bold">{video.title}</h1>
-              <p className="text-gray-400 text-sm">
+              <h1 className="text-2xl font-bold" style={{ color: '#333333', fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>{video.title}</h1>
+              <p className="text-sm" style={{ color: '#666666', fontFamily: 'Inter, sans-serif' }}>
                 {new Date(video.createdAt).toLocaleDateString()} • {video.views} Views
               </p>
             </div>
@@ -141,11 +141,15 @@ const VideoPlayer = () => {
           <div className="mt-4 md:mt-0 flex items-center space-x-4">
             <button
               onClick={handleLike}
-              className={`flex items-center space-x-1 px-3 py-2 rounded ${
-                user 
-                  ? "bg-gray-700 hover:bg-gray-600" 
-                  : "bg-gray-600 cursor-not-allowed opacity-75"
-              }`}
+              className="flex items-center space-x-1 px-3 py-2 rounded"
+              style={{
+                backgroundColor: user ? (isLiked ? '#E35336' : '#F4A460') : '#cccccc',
+                color: '#ffffff',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: 500,
+                cursor: user ? 'pointer' : 'not-allowed',
+                opacity: user ? 1 : 0.75
+              }}
               disabled={!user}
             >
               <span>{isLiked ? "👍" : "👍"}</span>
@@ -153,19 +157,21 @@ const VideoPlayer = () => {
                 Like {likeCount > 0 && <span className="ml-1">{likeCount}</span>}
               </span>
             </button>
-            <button className="flex items-center space-x-1 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded">
+            <button className="flex items-center space-x-1 px-3 py-2 rounded" style={{ backgroundColor: '#F4A460', color: '#ffffff', fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
               <span>↗</span>
               <span>Share</span>
             </button>
             <button
               onClick={handleSubscribe}
-              className={`px-4 py-2 rounded-full ${
-                !user
-                  ? "bg-gray-600 cursor-not-allowed opacity-75"
-                  : isSubscribed 
-                    ? "bg-gray-600 hover:bg-gray-500" 
-                    : "bg-red-600 hover:bg-red-700"
-              }`}
+              className="px-4 py-2 rounded-full"
+              style={{
+                backgroundColor: !user ? '#cccccc' : (isSubscribed ? '#A0522D' : '#E35336'),
+                color: '#ffffff',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: 600,
+                cursor: user ? 'pointer' : 'not-allowed',
+                opacity: user ? 1 : 0.75
+              }}
               disabled={!user}
             >
               {!user ? "Sign in to Subscribe" : isSubscribed ? "Subscribed" : "Subscribe"}
@@ -173,13 +179,13 @@ const VideoPlayer = () => {
           </div>
         </div>
 
-        <p className="mt-4 text-gray-300">{video.description}</p>
+        <p className="mt-4" style={{ color: '#333333', fontFamily: 'Inter, sans-serif' }}>{video.description}</p>
 
         {/* Show sign in prompt for non-authenticated users */}
         {!user && (
-          <div className="mt-4 p-3 bg-blue-900 bg-opacity-50 rounded border border-blue-700">
-            <p className="text-blue-300">
-              <Link to="/register" className="text-blue-400 hover:underline">
+          <div className="mt-4 p-3 rounded" style={{ backgroundColor: '#FFF8DC', border: '1px solid #E35336' }}>
+            <p style={{ color: '#333333', fontFamily: 'Inter, sans-serif' }}>
+              <Link to="/register" style={{ color: '#E35336', textDecoration: 'underline', fontWeight: 600 }}>
                 Sign in
               </Link>{" "}
               to like videos, subscribe to channels, and add comments.
@@ -190,7 +196,7 @@ const VideoPlayer = () => {
 
       {/* Comments Section */}
       <div className="mt-6">
-        <h2 className="text-xl font-semibold mb-4">Comments</h2>
+        <h2 className="text-xl font-semibold mb-4" style={{ color: '#333333', fontFamily: 'Inter, sans-serif', fontWeight: 700 }}>Comments</h2>
         <Comments videoId={videoId} />
       </div>
     </div>

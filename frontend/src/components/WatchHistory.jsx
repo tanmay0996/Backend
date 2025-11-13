@@ -74,7 +74,7 @@ const WatchHistory = () => {
           <CircularProgress color="inherit" />
         </Box>
       ) : error ? (
-        <Container sx={{ py: 4 }}>
+        <Container sx={{ py: 3 }}>
           <Alert severity="error">
             {error === "User is not signed in" ? (
               <>User is not <Link href="/register">sign in</Link></>
@@ -88,35 +88,36 @@ const WatchHistory = () => {
           sx={{
             bgcolor: "background.default",
             minHeight: "100vh",
-            py: { xs: 3, sm: 5, md: 8 }
+            py: { xs: 2, sm: 3, md: 4 }
           }}
         >
           <Container maxWidth="lg">
             <Typography
-              variant="h4"
+              variant="h5"
               gutterBottom
               sx={{
                 color: "text.primary",
                 fontWeight: 700,
-                mb: { xs: 2, sm: 4 }
+                mb: { xs: 2, sm: 3 },
+                fontSize: { xs: '1.25rem', sm: '1.5rem', md: '1.75rem' }
               }}
             >
               Watch History
             </Typography>
 
             {videos.length > 0 ? (
-              <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}>
+              <Grid container spacing={{ xs: 1.5, sm: 2, md: 2.5 }}>
                 {videos.map((video) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={video._id}>
                     <Box
                       sx={{
                         bgcolor: "background.paper",
-                        borderRadius: 2,
+                        borderRadius: 1.5,
                         overflow: "hidden",
-                        transition: "transform 0.3s, box-shadow 0.3s",
+                        transition: "transform 0.2s, box-shadow 0.2s",
                         "&:hover": {
-                          transform: "translateY(-4px)",
-                          boxShadow: "0 4px 20px rgba(255,255,255,0.1)"
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 4px 16px rgba(255,255,255,0.08)"
                         }
                       }}
                     >
@@ -135,7 +136,7 @@ const WatchHistory = () => {
               </Grid>
             ) : (
               <Box sx={{ textAlign: "center", py: 4, bgcolor: "background.default" }}>
-                <Typography variant="h6" sx={{ color: "text.secondary" }}>
+                <Typography variant="body1" sx={{ color: "text.secondary", fontSize: '0.95rem' }}>
                   No watch history found
                 </Typography>
               </Box>

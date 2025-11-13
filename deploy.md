@@ -12,7 +12,7 @@ deploy both frontend and backend so that both become https
  const options = {
       httpOnly: true,    //http ke liye
       secure: true,     //https ke liye
-      sameSite: "None"   // @IMP   without this access token will not be stored in cookies=>  
+      sameSite: "none"   // @IMP   without this access token will not be stored in cookies=>  
                                     can't  access secured route without this           
     };
 

@@ -1,43 +1,37 @@
+// video.routes.js
 import { Router } from "express";
-import { upload } from "../middleware/multer.middleware.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
+import { optionalAuth } from "../middleware/optionalAuth.middleware.js"; // Import optional auth
+import { upload } from "../middleware/multer.middleware.js";
 import {
-    deleteVideo,
     getAllVideos,
+    publishAVideo,
     getVideoById,
     updateVideo,
-    publishAVideo,
-    togglePublishStatus
+    deleteVideo,
+    togglePublishStatus,
 } from "../controllers/video.controller.js";
 
 const router = Router();
 
-// router.use(verifyJWT); // Apply verifyJWT middleware to all routes in this file
+// Public routes (with optional auth for logged-in features)
+router.route("/").get(optionalAuth, getAllVideos); // Optional auth for personalized results
 
-router
-    .route("/")
-    .get(getAllVideos)
-    .post(
-        verifyJWT,
-        upload.fields([
-            {
-                name: "videoFile",
-                maxCount: 1
-            },
-            {
-                name: "thumbnail",
-                maxCount: 1
-            }
-        ]),
-        publishAVideo
-    );
+// Get video by ID - needs optional auth to track watch history for logged-in users
+router.route("/v/:videoId").get(optionalAuth, getVideoById);
 
-router
-    .route("/v/:videoId")
-    .get(getVideoById)
-    .delete(verifyJWT, deleteVideo)
-    .patch(verifyJWT, upload.single("thumbnail"), updateVideo);
+// Protected routes (require authentication)
+router.route("/")
+    .post(verifyJWT, upload.fields([
+        { name: "videoFile", maxCount: 1 },
+        { name: "thumbnail", maxCount: 1 }
+    ]), publishAVideo);
 
-router.route("/toggle/publish/:videoId").patch(verifyJWT, togglePublishStatus);
+router.route("/:videoId")
+    .patch(verifyJWT, upload.single("thumbnail"), updateVideo)
+    .delete(verifyJWT, deleteVideo);
+
+router.route("/toggle/publish/:videoId")
+    .patch(verifyJWT, togglePublishStatus);
 
 export default router;
